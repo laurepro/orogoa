@@ -1,5 +1,6 @@
-var fileDir="/sdcard/orogoa"
-//Called when application is started.
+const fileDir = "/sdcard/orogoa";
+const regexdt = /var data = (\[\[.*\]\])/;
+
 function OnStart()
 {
 	//Create a layout with objects vertically centered.
@@ -14,18 +15,28 @@ function OnStart()
 	app.AddLayout( lay );
 
     app.MakeFolder( fileDir );
+    app.ShowProgress('Chargement SHOM');
 	app.HttpRequest("GET","https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr","","",function(error,response){
+        app.HideProgress();
     	if(!error) {
     	    app.WriteFile( fileDir + "/shom.js", response );
-        	shom = '<html><head><title>SHOM</title></head>';
+        	shom = '<html><head><script src="file:///android_asset/app.js"></script></head>';
         	shom += '<body style="text-align:center">';
         	shom += '<script src="file://' + fileDir + '/shom.js"></script>';
         	shom += '</body>';
         	shom += '</html>';
             webv.LoadHtml(shom);
+            
+            // récupération des marées hautes/basses
+            
+            // decodage des données de marée
+            var regd = regexdt.exec(response);
+            if(regd) {
+                regd = regd[0].replace(/\\(.)/mg, "$1");
+                eval(regd); // => data
+            }
     	}
 	});
-	
 }
 
 // affichage des attribus objets
