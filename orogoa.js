@@ -1,46 +1,80 @@
 const fileDir = "/sdcard/orogoa";
 const regexdt = /var data = (\[\[.*\]\])/;
+var marees = [], courbe = {};
 
 function OnStart()
 {
-	//Create a layout with objects vertically centered.
-	lay = app.CreateLayout( "linear", "VCenter,FillXY" );	
-
-	//Create a text label and add it to layout.
+	mainlay = app.CreateLayout( "linear", "VCenter,FillXY" );	
+    tabs = app.CreateTabs( "Indicateur,SHOM", 1, 1, "VCenter,FillXY" );	
+	mainlay.AddChild( tabs );
+	sublay = app.CreateLayout( "linear", "VCenter,FillXY" );
+	//tabs.AddChild(sublay,0);
 	webv = app.CreateWebView(1,1)
+	tabs.AddChild(webv,1);
+	app.AddLayout( mainlay );
 	
-	lay.AddChild( webv );
 	
-	//Add layout to app.	
-	app.AddLayout( lay );
 
     app.MakeFolder( fileDir );
-    app.ShowProgress('Chargement SHOM');
-	app.HttpRequest("GET","https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr","","",function(error,response){
-        app.HideProgress();
-    	if(!error) {
-    	    app.WriteFile( fileDir + "/shom.js", response );
-        	shom = '<html><head><script src="file:///android_asset/app.js"></script></head>';
-        	shom += '<body style="text-align:center">';
-        	shom += '<script src="file://' + fileDir + '/shom.js"></script>';
-        	shom += '</body>';
-        	shom += '</html>';
-            webv.LoadHtml(shom);
-            
-            // récupération des marées hautes/basses
-            
-            // decodage des données de marée
-            var regd = regexdt.exec(response);
-            if(regd) {
-                regd = regd[0].replace(/\\(.)/mg, "$1");
-                eval(regd); // => data
-            }
-    	}
-	});
+    
+    if(app.FileExists( fileDir + "/shom.js" ) && app.GetFileDate( fileDir + "/shom.js" ).toDateString() == (new Date()).toDateString()) {
+        executeShom(app.ReadFile( fileDir + "/shom.js" ));
+    }
+    else {
+        app.ShowProgress('Chargement SHOM');
+    	app.HttpRequest("GET","https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr","","",function(error,response){
+            app.HideProgress();
+        	if(!error) {
+        	    app.WriteFile( fileDir + "/shom.js", response );
+        	    executeShom(response);
+        	}
+    	});
+    }
+}
+
+function executeShom(contentShom){
+    webv.LoadHtml(app.ReadFile('shom.html'));
+    // récupération des marées hautes/basses
+    
+    // decodage des données de marée
+    var regd = regexdt.exec(contentShom);
+    if(regd) {
+        regd = regd[0].replace(/\\(.)/mg, "$1");
+        eval(regd); // => data
+    }
+    data.forEach(function(data){
+        courbe[(data[0]).substr(0,5)] = data[1];
+    });
+    alert(pp(courbe));
+}
+
+function recupMaree(jsonString) {
+    var cnt = 0;
+    var mar;
+    JSON.parse(jsonString).forEach(function(item) {
+        switch (cnt % 4) {
+            case 0: 
+                mar = {};
+                mar.maree = item;
+                break;
+            case 1:
+                mar.horaire = item;
+                break;
+            case 2:
+                mar.hauteur = parseFloat(item);
+                break;
+            case 3:
+                mar.coefficient = parseInt(item) || '';
+                marees.push(mar);
+                break;
+        }
+        cnt++;
+    });
+    alert(pp(marees));
 }
 
 // affichage des attribus objets
-function pretty_print(objet) {
+function pp(objet) {
     var a,
       str = "";
     for (a in objet) {
@@ -49,7 +83,7 @@ function pretty_print(objet) {
                 if (objet[a] instanceof Number) {
                     str += a + " : " + objet[a] + " [" + objet[a].numerator + "/" + objet[a].denominator + "]\r\n";
                 } else {
-                    str += a + " : [" + objet[a].length + " values]\r\n";
+                    str += a + " : [" + pp(objet[a]) + "]\r\n";
                 }
             } else {
                 str += a + " : " + objet[a] + "\r\n";
