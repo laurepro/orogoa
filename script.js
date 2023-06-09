@@ -14,6 +14,7 @@ window.addEventListener("load", (event) => {
   });
   var level = calculateView();
   drawLevel(level);
+  drawCar(level);
   setTimeout(function () {
     drawSea(level);
   }, 30000);
@@ -55,6 +56,7 @@ function calculateView() {
   if (!isActive) {
     document.querySelector("div.panel#level").classList.remove("active");
   }
+  document.querySelector("#rootstyle").innerText = `:root {--main-step: ${level.step}px; --main-bottom: -${level.min * level.step}px }`
   return level;
 }
 
@@ -75,9 +77,6 @@ function drawScale(level) {
 
 function drawLevel(level) {
   document.querySelector("div.panel#level #info").innerHTML = `at ${level.cur} sea is ${level.lev} meters high !`;
-  level.view.querySelector("#road").style.height = level.road;
-  level.view.querySelector("#road").style.bottom = level.sand;
-  level.view.querySelector("#sand").style.height = level.sand;
   drawScale(level);
   drawSea(level);
 }
@@ -86,22 +85,10 @@ function drawSea(level) {
   sea = level.height - level.sea;
   var waves = [];
   [
-    {
-      pos: level.width / 2,
-      beg: "0s",
-    },
-    {
-      pos: level.width / 2,
-      beg: "2s",
-    },
-    {
-      pos: level.width / 3,
-      beg: "1s",
-    },
-    {
-      pos: (level.width / 3) * 2,
-      beg: "0s",
-    },
+    { pos: level.width / 2, beg: "0s" },
+    { pos: level.width / 2, beg: "2s" },
+    { pos: level.width / 3, beg: "1s" },
+    { pos: level.width / 3 * 2, beg: "0s" },
   ].forEach(function (w) {
     waves.push(`<path class="wave" d="M 0 ${sea} C ${w.pos} ${sea + 50} ${w.pos} ${sea - 50} ${level.width} ${sea} L ${level.width} ${level.height} L 0 ${level.height} L 0 ${sea}"><animate attributeName="d" dur="5s" begin="${w.beg}" values="M 0 ${sea} C ${w.pos} ${sea - 50} ${w.pos} ${sea + 50} ${level.width} ${sea} L ${level.width} ${level.height} L 0 ${level.height} L 0 ${sea}; M 0 ${sea} C ${w.pos} ${sea + 50} ${w.pos} ${sea - 50} ${level.width} ${sea} L ${level.width} ${level.height} L 0 ${level.height} L 0 ${sea}; M 0 ${sea} C ${w.pos} ${sea - 50} ${w.pos} ${sea + 50} ${level.width} ${sea} L ${level.width} ${level.height} L 0 ${level.height} L 0 ${sea}" repeatCount="indefinite" /></path>`);
   });
@@ -110,9 +97,13 @@ function drawSea(level) {
   level.view.querySelector("#waves").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="sea" x="0px" y="0px" viewBox="0 0 ${level.width} ${level.height}" style="enable-background:new 0 0 ${level.width} ${level.height};" xml:space="preserve"><style type="text/css">.wave{opacity:0.6;fill:#0C3157;enable-background:new;}</style>${pathes}</svg>`;
 }
 
-function drawCar(width, floor, ratio) {
-  var car = `car${Math.random(5) + 1}.svg`;
-  var anim = new Element("img");
-  anim.src = car;
-  view.querySelector("#view").appendChild(anim);
+function drawCar(level) {
+  var car = Math.floor(Math.random(5)) + 1;
+  var anim = document.createElement("img");
+  view.appendChild(anim);
+  car = 1;
+  anim.classList.add(`car`);
+  anim.classList.add(`type${car}`);
+  anim.style.bottom = level.car;
+  setTimeout(()=> anim.remove(), 3000)
 }

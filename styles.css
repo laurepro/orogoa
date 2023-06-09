@@ -72,7 +72,8 @@ div.panel#level #view #scale {
 div.panel#level #view #sand {
     position: absolute;
     width: 100%;
-    bottom: 0;
+    bottom: var(--main-bottom);
+    height: calc(var(--main-step) * 2.7);
     background-color: #C2B280;
 }
 
@@ -80,6 +81,8 @@ div.panel#level #view #road {
     position: absolute;
     width: 100%;
     background-color: black;
+    height: calc(var(--main-step) * 0.3);
+    bottom: calc(var(--main-step) * 2.7 + var(--main-bottom))
 }
 
 div.panel#level #view #waves {
@@ -89,8 +92,23 @@ div.panel#level #view #waves {
     bottom: 0;
 }
 
-div.car,
-div.truck,
-div.camper {
+img.car {
     position: absolute;
+    width:auto;
+    animation: 3s linear 1s infinite running slideleft;
+}
+
+img.car.type1 {
+    content:url(car1.svg);
+    height: calc()
+}
+
+@keyframes slideleft {
+    from {
+        transform: translateX(110vw);
+    }
+
+    to {
+        transform: translateX(-20vw);
+    }
 }
