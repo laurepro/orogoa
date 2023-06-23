@@ -1,80 +1,65 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <style id="rootstyle"></style>
-    <link rel="stylesheet" href="styles.css" />
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="ressources/styles.css" />
+    <script src="ressources/i18n.js"></script>
+    <script src="ressources/script.js"></script>
   </head>
   <body>
-    <nav>
+    <nav id="tabs">
       <ul>
-        <li id="shom" class="active">shom</li>
-        <li id="level">level</li>
-        <li id="map">map</li>
-        <li id="credits">credits</li>
+        <li id="level" data-i18n="level"></li>
+        <li id="time" data-i18n="time"></li>
+        <li id="map" data-i18n="map"></li>
+        <li id="credits" data-i18n="credits"></li>
       </ul>
     </nav>
-    <div id="shom" class="panel active">
-      <script src="https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr"></script>
-    </div>
-    <div id="level" class="panel active">
-      <div id="info"></div>
-      <div id="view">
+    <div id="panels">
+      <div id="level" class="panel active">
         <div id="sand"></div>
         <div id="road"></div>
         <div id="waves"></div>
         <ul id="scale"></ul>
         <ul id="times"></ul>
       </div>
-    </div>
-    <div id="map" class="panel">map</div>
-    <div id="credits" class="panel">
-      <ul class="en">
-        <li>
-          &copy; 2023 <a href="https://github.com/laurepro" target="github">Laurent PROTT</a>
-        </li>
-        <li>
-          Tide data <a href="https://services.data.shom.fr/" target="shom">Provided by API SHOM</a>
-        </li>
-        <li>
-          Car SVG <a href="http://www.freepik.com" target="freepik">Designed by Freepik</a>
-        </li>
-        <li class="disclaimer">
-          <h1>Disclaimer:</h1>
-          <p>
+      <div id="time" class="panel active">
+        <div id="now" data-i18n-dyn="now"></div>
+        <script src="https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr"></script>
+      </div>
+      <div id="map" class="panel">map</div>
+      <div id="credits" class="panel">
+        <ul id="en">
+          <br/>
+          <li>&copy; 2023 <a href="https://github.com/laurepro" target="github">Laurent PROTT</a></li>
+          <li>Tide data <a href="https://services.data.shom.fr/" target="shom">Provided by API SHOM</a></li>
+          <li>Car SVG <a href="http://www.freepik.com" target="freepik">Designed by Freepik</a></li>
+          <li class="disclaimer">
+            <h1>Disclaimer:</h1>
             The following disclaimer applies to the use of the application and should be read carefully. By using this application, you acknowledge and accept the terms and conditions outlined below:
-          </p>
-          <ol>
-            <li>
-              The application is provided on an "as is" basis, and we do not guarantee its accuracy, reliability, or suitability for any particular purpose. While we strive to provide accurate and up-to-date information, we cannot guarantee that the application will be error-free or meet your specific requirements.
-            </li>
-            <li>
-              The application is not intended to replace professional advice or serve as a substitute for legal, medical, or regulatory guidance. It is your responsibility to comply with all applicable laws, regulations, and safety protocols.
-            </li>
-            <li>
-              We disclaim any liability for the consequences of your use or reliance on the information provided by the application. You acknowledge that the use of the application is at your own risk, and we shall not be held responsible for any damages, losses, or injuries resulting from its use.
-            </li>
-            <li>
-              The application may provide general safety guidelines or recommendations, but it is essential to remember that these suggestions cannot guarantee the prevention of accidents, injuries, or loss of life. It is your responsibility to exercise caution, follow regulations, and take appropriate actions to ensure personal safety and compliance.
-            </li>
-            <li>
-              We do not assume any responsibility for the actions, behavior, or conduct of users of the application. You are solely responsible for your interactions with others and the decisions you make based on the information provided by the application.
-            </li>
-            <li>
-              The application may contain links to third-party websites or resources. We are not responsible for the availability, accuracy, or reliability of such external sites or resources. The inclusion of any link does not imply endorsement or association with the linked website or resource.
-            </li>
-            <li>
-              We reserve the right to modify, suspend, or terminate the application at any time, without prior notice or liability.
-            </li>
-          </ol>
-          <p>
-            By using this application, you agree to release and hold harmless the developers, owners, and affiliates from any claims, damages, liabilities, or losses arising from your use of the application, including but not limited to any failure to comply with regulations or guidelines.
-          </p>
-          <p>
-            Please note that this disclaimer is intended for informational purposes only and does not constitute a legally binding agreement. For any legal concerns or specific requirements, it is recommended to consult with a legal professional.
-          </p>
-        </li>
-      </ul>
+            <ol>
+              <li>The application is provided on an "as is" basis, and we do not guarantee its accuracy, reliability, or suitability for any particular purpose. While we strive to provide accurate and up-to-date information, we cannot guarantee that the application will be error-free or meet your specific requirements.</li>
+              <li>The application is not intended to replace professional advice or serve as a substitute for legal, medical, or regulatory guidance. It is your responsibility to comply with all applicable laws, regulations, and safety protocols.</li>
+              <li>We disclaim any liability for the consequences of your use or reliance on the information provided by the application. You acknowledge that the use of the application is at your own risk, and we shall not be held responsible for any damages, losses, or injuries resulting from its use.</li>
+              <li>The application may provide general safety guidelines or recommendations, but it is essential to remember that these suggestions cannot guarantee the prevention of accidents, injuries, or loss of life. It is your responsibility to exercise caution, follow regulations, and take appropriate actions to ensure personal safety and compliance.</li>
+              <li>We do not assume any responsibility for the actions, behavior, or conduct of users of the application. You are solely responsible for your interactions with others and the decisions you make based on the information provided by the application.</li>
+              <li>The application may contain links to third-party websites or resources. We are not responsible for the availability, accuracy, or reliability of such external sites or resources. The inclusion of any link does not imply endorsement or association with the linked website or resource.</li>
+              <li>We reserve the right to modify, suspend, or terminate the application at any time, without prior notice or liability.</li>
+            </ol>
+            <p>By using this application, you agree to release and hold harmless the developers, owners, and affiliates from any claims, damages, liabilities, or losses arising from your use of the application, including but not limited to any failure to comply with regulations or guidelines.</p>
+            <p>Please note that this disclaimer is intended for informational purposes only and does not constitute a legally binding agreement. For any legal concerns or specific requirements, it is recommended to consult with a legal professional.</p>
+          </li>
+        </ul>
+      </div>
     </div>
+    <nav id="locales">
+      <ul>
+        <li id="fr"><img src="ressources/svg/fr.svg" /></li>
+        <li id="en"><img src="ressources/svg/gb.svg" /></li>
+        <li id="de"><img src="ressources/svg/de.svg" /></li>
+        <li id="es"><img src="ressources/svg/es.svg" /></li>
+      </ul>
+    </nav>
   </body>
 </html>
