@@ -56,7 +56,24 @@ function calculateView() {
       var td = tide.querySelectorAll("td");
       if (td.length > 0) {
         if (td[0].innerText.trim() == "BM") {
-          level.tides.push(td[1].innerText.trim());
+          var [hour,minute] = td[1].innerText.trim().split(':').map(v=>parseInt(v));
+          var mt = minute + 30;
+          var ht = hour + 1 + Math.floor(mt / 60);
+          mt = mt % 60;
+          ht = ht % 24;
+          var ml = minute - 30;
+          var hl = hour - 1;
+          if(ml < 0 ){
+            ml += 60;
+            hl -= 1;
+          }
+          if(hl < 0) {
+            hl += 24;
+          }
+          console.log('tide', hour, minute);
+          console.log('stop', ht, mt); 
+          console.log('start', hl, ml); 
+          level.tides.push();
         }
       }
     });
@@ -91,6 +108,7 @@ function drawSea(level) {
   });
   var high = level.data[level.current][1];
   document.querySelector("#now").dataset.values = ["_date_", high];
+  document.querySelector("#range").dataset.values = ["00:00","99:99"]
   sea = level.height - Math.round((high - level.min) * level.step);
   var waves = [];
   [

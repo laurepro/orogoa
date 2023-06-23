@@ -18,6 +18,7 @@ const i18n = {
     map: "carte",
     credits: "crédits",
     now: "à {0} la mer est à {1} mètres",
+    range: "prochain passage entre {0} et {1}",
     disclamer: `
     <h1>Clause de non-responsabilité:</h1>
     <p>La clause de non-responsabilité suivante s'applique à l'utilisation de l'application et doit être lue attentivement. En utilisant cette application, vous reconnaissez et acceptez les termes et conditions décrits ci-dessous :</p>
