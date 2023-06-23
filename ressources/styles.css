@@ -6,7 +6,7 @@
 html,
 body {
     background-color: black;
-    font: small-caps bold 3vmin sans-serif;
+    font: small-caps bold 5vmin sans-serif;
     color: white;
     text-align: center;
     position: relative;
@@ -26,9 +26,12 @@ ul {
 li.disclaimer {
     padding: 5vmin;
     text-align: justify;
-    font: normal normal 2vmin sans-serif;
+    font: normal normal 3vmin sans-serif;
 }
 
+li.disclaimer p {
+    padding: 3vmin 0;
+}
 li.disclaimer ol {
     padding-left: 2vmin;
     margin-left: 2vmin;
@@ -61,7 +64,7 @@ nav>ul>li.active {
 div.panel {
     display: none;
     overflow-y: scroll;
-    height: calc(100vh - 18vmin);
+    height: calc(var(--main-height) - 18vmin);
     width: 100%;
 }
 

@@ -2,7 +2,8 @@ var panels,
   tabs,
   panelname = localStorage.getItem("panel") || "level";
 
-window.addEventListener("load", (event) => {
+window.addEventListener("load", () => {
+  document.querySelector("#rootstyle").innerText = `:root {--main-height: ${window.innerHeight}px }`;
   panels = document.querySelector("div#panels");
   tabs = document.querySelector("nav#tabs ul");
   tabs.addEventListener("click", (event) => {
@@ -18,6 +19,7 @@ window.addEventListener("load", (event) => {
   window.addEventListener("resize", function () {
     this.clearTimeout(doResize);
     doResize = setTimeout(function () {
+      document.querySelector("#rootstyle").innerText = `:root {--main-height: ${window.innerHeight}px }`;
       level = calculateView();
       drawLevel(level);
     }, 100);
@@ -46,7 +48,7 @@ function calculateView() {
   level.height = level.view.offsetHeight;
   level.width = level.view.offsetWidth;
   level.step = level.height / level.max;
-  document.querySelector("#rootstyle").innerText = `:root {--main-step: ${level.step}px; --main-bottom: -${level.min * level.step}px }`;
+  document.querySelector("#rootstyle").innerText = `:root {--main-step: ${level.step}px; --main-bottom: -${level.min * level.step}px; --main-height: ${window.innerHeight}px }`;
   document
     .getElementById(rid)
     .contentDocument.querySelectorAll(".hlt.hltOfTheDay .table-striped tbody tr")
@@ -88,7 +90,7 @@ function drawSea(level) {
     }
   });
   var high = level.data[level.current][1];
-  document.querySelector("#now").dataset.values = [level.now, high];
+  document.querySelector("#now").dataset.values = ["_date_", high];
   sea = level.height - Math.round((high - level.min) * level.step);
   var waves = [];
   [
