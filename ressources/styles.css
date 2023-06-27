@@ -10,8 +10,8 @@ body {
     color: white;
     text-align: center;
     position: relative;
-    height:100%;
-    width:100%;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -32,6 +32,7 @@ li.disclaimer {
 li.disclaimer p {
     padding: 3vmin 0;
 }
+
 li.disclaimer ol {
     padding-left: 2vmin;
     margin-left: 2vmin;
@@ -51,10 +52,11 @@ nav>ul>li {
     font-size: 7vmin;
     cursor: pointer;
 }
+
 nav>ul>li>img {
-    height:calc(9vmin - 6px);
+    height: calc(9vmin - 6px);
     border: 3px solid white;
-    pointer-events : none;
+    pointer-events: none;
 }
 
 nav>ul>li.active {
@@ -74,6 +76,7 @@ div.panel.active {
 
 div.panel#level {
     position: relative;
+    text-align: initial;
     margin: 0;
     padding: 0;
     background: radial-gradient(ellipse at center, #fffeea 0%, #fffeea 35%, #b7e8eb 100%);
@@ -83,16 +86,16 @@ div.panel#level {
 div.panel#level #scale {
     position: absolute;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    width: 5vmin;
     z-index: 10;
     font-size: 5vmin;
 }
 
 div.panel#level #scale li {
+    position: absolute;
     padding: 0 1vmin;
     text-align: center;
+    border-bottom: 1px solid black;
 }
 
 div.panel#level #times {
@@ -125,10 +128,18 @@ div.panel#level #times li:not(:first-of-type):hover {
     text-align: left;
 }
 
-div.panel#level #times li:first-of-type {
-    font-size: 10vmin;
+div.panel#level #times li:not(:first-of-type):hover span.label {
+    background-color: black;
+    padding: 0 10px;
+    border-radius: 10px;;
 }
 
+div.panel#level #times li:first-of-type img {
+    width: 10vmin;
+}
+div.panel#level #times li:first-of-type img.down {
+    transform: rotateX(180deg);
+}
 div.panel#level #sand {
     position: absolute;
     width: 100%;
@@ -156,19 +167,25 @@ div.panel#level #waves {
 img.car {
     position: absolute;
     width: auto;
+    display:block;
+    opacity: 0;
     bottom: calc(var(--main-step) * 3 + var(--main-bottom));
-    animation-duration: 10s;
+    animation-duration: 5s;
     animation-timing-function: ease-in;
     animation-iteration-count: 1;
     animation-direction: normal;
 }
 
 img.car.left {
+    opacity: 1;
     animation-name: slideleft;
+    left: 100vw;
 }
 
 img.car.right {
-    animation-name: slideright;
+    opacity: 1;
+    animation-name: slidesright;
+    left: 0;
 }
 
 img.car.t1 {
@@ -197,17 +214,17 @@ img.car.t6 {
 
 @keyframes slideleft {
     from {
-        transform: translateX(110vw);
+        transform: translateX(0);
     }
 
     to {
-        transform: translateX(-100vw);
+        transform: translateX(-200vw);
     }
 }
 
 @keyframes slideright {
     from {
-        transform: translateX(-110vw) rotateY(180deg);
+        transform: rotateY(180deg);
     }
 
     to {

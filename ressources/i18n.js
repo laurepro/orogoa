@@ -10,15 +10,20 @@ String.prototype.format = function() {
 const i18n = {
   fr: {
     shom: "Fournies par",
-    design: 'Conçu par',
+    design: 'Conçues par',
     data: "données de marée",
     cars: "voitures",
     level: "niveau",
     time: "horaire",
     map: "carte",
     credits: "crédits",
-    now: "à {0} la mer est à {1} mètres",
-    range: "prochain passage entre {0} et {1}",
+    now: "à {0} la mer est à {1}",
+    above: "{0} au dessus de la route",
+    under: "{0} plus bas que la route",
+    next: "prochain passage",
+    current: "passage possible jusqu'à {1}",
+    range: "entre {0} et {1}",
+    tomorrow: "demain",
     disclamer: `
     <h1>Clause de non-responsabilité:</h1>
     <p>La clause de non-responsabilité suivante s'applique à l'utilisation de l'application et doit être lue attentivement. En utilisant cette application, vous reconnaissez et acceptez les termes et conditions décrits ci-dessous :</p>
@@ -44,7 +49,13 @@ const i18n = {
     time: "time",
     map: "map",
     credits: "crédits",
-    now: "at {0} the sea is {1} meters away",
+    now: "at {0} the sea is {1} high",
+    above: "{0} above the road",
+    under: "{0} lower than the road",
+    next: "next pass",
+    current: "passage possible until {1}",
+    range: "between {0} and {1}",
+    tomorrow: "tomorrow",
     disclamer: `
     <h1>Disclaimer:</h1>
     <p>The following disclaimer applies to the use of the application and should be read carefully. By using this application, you acknowledge and accept the terms and conditions outlined below:</p>
@@ -70,7 +81,13 @@ const i18n = {
     time: "Zeitplan",
     map: "karte",
     credits: "crédits",
-    now: "um {0} Uhr ist das Meer {1} Meter entfernt",
+    now: "Bei {0} ist das Meer {1} hoch",
+    above: "{0} über der Straße",
+    under: "{0} tiefer als die Straße",
+    next: "nächster Durchgang",
+    current: "Durchfahrt bis {1} Uhr möglich",
+    range: "zwischen {0} und {1}",
+    tomorrow: "morgen",
     disclamer: `
     <h1>Haftungsausschluss:</h1>
     <p>Der folgende Haftungsausschluss gilt für die Nutzung der Anwendung und sollte sorgfältig gelesen werden. Durch die Nutzung dieser Anwendung erkennen Sie die unten aufgeführten Bedingungen an und akzeptieren diese:</p>
@@ -96,7 +113,13 @@ const i18n = {
     time: "horario",
     map: "mapa",
     credits: "creditos",
-    now: "a las {0} el mar está a {1} metros",
+    now: "en {0} el mar está {1} alto",
+    above: "{0} por encima de la carretera",
+    under: "{0} más bajo que la carretera",
+    next: "siguiente paso",
+    current: "pasaje posible hasta las {1}",
+    range: "entre {0} y {1}",
+    tomorrow: "mañana",
     disclamer: `
     <h1>Descargo de responsabilidad:</h1>
     <p>El siguiente descargo de responsabilidad se aplica al uso de la aplicación y debe leerse detenidamente. Al utilizar esta aplicación, usted reconoce y acepta los términos y condiciones que se describen a continuación:</p>
@@ -141,8 +164,18 @@ const translate = () => {
     var values = element.getAttribute("data-values");
     if (values) {
       values = values.split(',').map((value)=>{
-        if(value == "_date_") {
-          return (new Date(Date.now())).toLocaleTimeString(locale, { timeStyle: 'short' });
+        if(rdate = value.match( /^([0-9]{2}):([0-9]{2})$/)) {
+          var date = new Date(Date.now());
+          date.setHours(rdate[1], rdate[2], 0);
+          return date.toLocaleTimeString(locale, { timeStyle: 'short' });
+        }
+        if(rlevel = value.match(/^[+-]?((\d+\.?\d*)|(\.\d+))m$/)) {
+          var num = parseFloat(rlevel);
+          if(locale == 'en') {
+            num = Math.round(num * 328.0839895) / 100;
+            return num.toLocaleString(locale) + 'ft';
+          }
+          return num.toLocaleString(locale) + 'm';
         }
         return value;
       })

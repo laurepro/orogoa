@@ -3,7 +3,7 @@ var panels,
   panelname = localStorage.getItem("panel") || "level";
 
 window.addEventListener("load", () => {
-  document.querySelector("#rootstyle").innerText = `:root {--main-height: ${window.innerHeight}px }`;
+  setRootCss("--main-height", `${window.innerHeight}px`);
   panels = document.querySelector("div#panels");
   tabs = document.querySelector("nav#tabs ul");
   tabs.addEventListener("click", (event) => {
@@ -19,12 +19,22 @@ window.addEventListener("load", () => {
   window.addEventListener("resize", function () {
     this.clearTimeout(doResize);
     doResize = setTimeout(function () {
-      document.querySelector("#rootstyle").innerText = `:root {--main-height: ${window.innerHeight}px }`;
+      setRootCss("--main-height", `${window.innerHeight}px`);
       level = calculateView();
       drawLevel(level);
     }, 100);
   });
 });
+
+var roots = {};
+function setRootCss(key, value) {
+  roots[key] = value;
+  var root = "";
+  for (const [key, value] of Object.entries(roots)) {
+    root += `${key}: ${value};`;
+  }
+  document.querySelector("#rootstyle").innerText = `:root {${root}}`;
+}
 
 function changePanel(panelname) {
   tabs.querySelectorAll(".active").forEach((tab) => tab.classList.remove("active"));
@@ -48,7 +58,8 @@ function calculateView() {
   level.height = level.view.offsetHeight;
   level.width = level.view.offsetWidth;
   level.step = level.height / level.max;
-  document.querySelector("#rootstyle").innerText = `:root {--main-step: ${level.step}px; --main-bottom: -${level.min * level.step}px; --main-height: ${window.innerHeight}px }`;
+  setRootCss("--main-step", `${level.step}px`);
+  setRootCss("--main-bottom", `-${level.min * level.step}px`);
   document
     .getElementById(rid)
     .contentDocument.querySelectorAll(".hlt.hltOfTheDay .table-striped tbody tr")
@@ -56,24 +67,28 @@ function calculateView() {
       var td = tide.querySelectorAll("td");
       if (td.length > 0) {
         if (td[0].innerText.trim() == "BM") {
-          var [hour,minute] = td[1].innerText.trim().split(':').map(v=>parseInt(v));
+          var [hour, minute] = td[1].innerText
+            .trim()
+            .split(":")
+            .map((v) => parseInt(v));
           var mt = minute + 30;
           var ht = hour + 1 + Math.floor(mt / 60);
           mt = mt % 60;
           ht = ht % 24;
           var ml = minute - 30;
           var hl = hour - 1;
-          if(ml < 0 ){
+          if (ml < 0) {
             ml += 60;
             hl -= 1;
           }
-          if(hl < 0) {
+          if (hl < 0) {
             hl += 24;
           }
-          console.log('tide', hour, minute);
-          console.log('stop', ht, mt); 
-          console.log('start', hl, ml); 
-          level.tides.push();
+          level.tides.push({
+            tide: `${padTime(hour)}:${padTime(minute)}:00`,
+            start: `${padTime(hl)}:${padTime(ml)}:00`,
+            stop: `${padTime(ht)}:${padTime(mt)}:00`,
+          });
         }
       }
     });
@@ -90,11 +105,13 @@ function drawScale(level) {
   document.querySelector("#scale").innerHTML = "";
   for (var i = level.max + 1; i >= level.min; i--) {
     const li = document.createElement("li");
+    // li.
+    li.style.bottom = ((i - level.min) * level.step) + "px";
     const text = document.createTextNode(i);
     li.appendChild(text);
     document.querySelector("#scale").appendChild(li);
   }
-  level.view.querySelector("#scale").style.background = `linear-gradient(0deg, lime 0, lime ${(2 - level.min) * level.step}px, orange ${(2.1 - level.min) * level.step}px, orange ${(2.5 - level.min) * level.step}px, red ${(2.7 - level.min) * level.step}px, red 100%)`;
+  level.view.querySelector("#scale").style.background = `linear-gradient(0deg, lime 0, lime ${(2.4 - level.min) * level.step}px, orange ${(2.5 - level.min) * level.step}px, orange ${(2.7 - level.min) * level.step}px, red ${(2.8 - level.min) * level.step}px, red 100%)`;
 }
 
 function drawSea(level) {
@@ -107,8 +124,30 @@ function drawSea(level) {
     }
   });
   var high = level.data[level.current][1];
-  document.querySelector("#now").dataset.values = ["_date_", high];
-  document.querySelector("#range").dataset.values = ["00:00","99:99"]
+  document.querySelector("#now").dataset.values = [level.now.substring(0, 5), high + "m"];
+  document.querySelector("#above").dataset.values = [high - 3 + "m"];
+  document.querySelector("#above").style.display = high > 3 ? "" : "none";
+  document.querySelector("#under").dataset.values = [Math.abs(high - 3) + "m"];
+  document.querySelector("#under").style.display = high < 3 ? "" : "none";
+  var tide = false,
+    next = false;
+  level.tides.forEach((range) => {
+    if (range.stop > level.now) {
+      if (!tide) {
+        document.querySelector("#range").dataset.values = [range.start.substring(0, 5), range.stop.substring(0, 5)];
+        document.querySelector("#current").dataset.values = [range.start.substring(0, 5), range.stop.substring(0, 5)];
+        tide = true;
+        if (range.start < level.now) {
+          next = true;
+        }
+      }
+    }
+    document.querySelector("#tomorrow").style.display = tide ? "none" : "";
+    document.querySelector("#current").style.display = next ? "" : "none";
+    document.querySelector("#next").style.display = next ? "none" : "";
+    document.querySelector("#range").style.display = next ? "none" : "";
+    translate();
+  });
   sea = level.height - Math.round((high - level.min) * level.step);
   var waves = [];
   [
@@ -134,7 +173,7 @@ function drawTimes(level) {
   var next = Math.min(level.current + 1, level.data.length - 1);
   var flux = level.data[next][1] < level.data[level.current][1];
   var direction = document.createElement("li");
-  direction.innerText = flux ? "🢃" : "🢁";
+  direction.innerHTML=`<img src="ressources/svg/arrow.svg" class="${flux?'down':'up'}">`;
   document.querySelector("#times").innerHTML = "";
   document.querySelector("#times").appendChild(direction);
   var i = level.current,
@@ -142,13 +181,12 @@ function drawTimes(level) {
   while (go == flux && i < level.data.length - 1) {
     go = level.data[i + 1][1] < level.data[i][1];
     var li = document.createElement("li");
-    var text = document.createTextNode(level.data[i][0].substring(0, 5));
-    li.appendChild(text);
+    li.innerHTML = `<span class="label">${level.data[i][0].substring(0, 5)}</span>`
     li.style.bottom = (level.data[i][1] - level.min) * level.step + "px";
     document.querySelector("#times").appendChild(li);
     i++;
   }
-  level.view.querySelector("#times").style.background = `linear-gradient(0deg, lime 0, lime ${(2 - level.min) * level.step}px, orange ${(2.1 - level.min) * level.step}px, orange ${(2.5 - level.min) * level.step}px, red ${(2.7 - level.min) * level.step}px, red 100%)`;
+  level.view.querySelector("#times").style.background = `linear-gradient(0deg, lime 0, lime ${(2.4 - level.min) * level.step}px, orange ${(2.5 - level.min) * level.step}px, orange ${(2.7 - level.min) * level.step}px, red ${(2.8 - level.min) * level.step}px, red 100%)`;
 }
 
 function drawCar(level) {
@@ -159,9 +197,12 @@ function drawCar(level) {
   anim.classList.add(`car`);
   anim.classList.add(`t${car}`);
   anim.src = `ressources/svg/car${car}.svg`;
-  anim.classList.add(direction);
-  setTimeout(() => {
+  setTimeout(function () {
+    setRootCss("--main-car", `${anim.offsetWidth}px`);
+    anim.classList.add('right');
+  }, 500);
+  anim.addEventListener("animationend", () => {
     anim.remove();
     drawCar(level);
-  }, 10000);
+  });
 }
