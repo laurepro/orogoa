@@ -131,15 +131,18 @@ div.panel#level #times li:not(:first-of-type):hover {
 div.panel#level #times li:not(:first-of-type):hover span.label {
     background-color: black;
     padding: 0 10px;
-    border-radius: 10px;;
+    border-radius: 10px;
+    ;
 }
 
 div.panel#level #times li:first-of-type img {
     width: 10vmin;
 }
+
 div.panel#level #times li:first-of-type img.down {
     transform: rotateX(180deg);
 }
+
 div.panel#level #sand {
     position: absolute;
     width: 100%;
@@ -167,7 +170,7 @@ div.panel#level #waves {
 img.car {
     position: absolute;
     width: auto;
-    display:block;
+    display: block;
     opacity: 0;
     bottom: calc(var(--main-step) * 3 + var(--main-bottom));
     animation-duration: 5s;
@@ -184,8 +187,8 @@ img.car.left {
 
 img.car.right {
     opacity: 1;
-    animation-name: slidesright;
-    left: 0;
+    animation-name: slideright;
+    left: calc(0px - var(--main-car));
 }
 
 img.car.t1 {
@@ -213,12 +216,8 @@ img.car.t6 {
 }
 
 @keyframes slideleft {
-    from {
-        transform: translateX(0);
-    }
-
     to {
-        transform: translateX(-200vw);
+        transform: translateX(calc(0px - 100vw - var(--main-car)));
     }
 }
 
@@ -226,8 +225,7 @@ img.car.t6 {
     from {
         transform: rotateY(180deg);
     }
-
     to {
-        transform: translateX(110vw) rotateY(180deg);
+        transform: translateX(calc(100vw + var(--main-car))) rotateY(180deg);
     }
 }

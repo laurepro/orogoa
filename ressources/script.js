@@ -53,7 +53,6 @@ function calculateView() {
     level.min = Math.floor(Math.min(hor[1], level.min));
     level.max = Math.floor(Math.max(hor[1], level.max));
   });
-  level.max += 1;
   level.view = document.querySelector("div.panel#level");
   level.height = level.view.offsetHeight;
   level.width = level.view.offsetWidth;
@@ -199,7 +198,7 @@ function drawCar(level) {
   anim.src = `ressources/svg/car${car}.svg`;
   setTimeout(function () {
     setRootCss("--main-car", `${anim.offsetWidth}px`);
-    anim.classList.add('right');
+    anim.classList.add('left');
   }, 500);
   anim.addEventListener("animationend", () => {
     anim.remove();
