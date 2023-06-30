@@ -9,6 +9,8 @@ String.prototype.format = function() {
 
 const i18n = {
   fr: {
+    content: "{0}",
+    paypal: "Cette application vous plait ?<br>Offrez moi un café !",
     shom: "Fournies par",
     design: 'Conçues par',
     data: "données de marée",
@@ -41,6 +43,7 @@ const i18n = {
     `
   },
   en: {
+    content: "{0}",
     shom: "Provided by",
     design: 'Designed by',
     data: "tides data",
@@ -73,6 +76,7 @@ const i18n = {
     `
   },
   de: {
+    content: "{0}",
     shom: "Zur Verfügung gestellt von",
     design: "entworfen von",
     data: "Gezeitendaten",
@@ -105,6 +109,7 @@ const i18n = {
     `
   },
   es: {
+    content: "{0}",
     shom: "Proporcionado por",
     design: "diseñada por",
     data: "datos de mareas",
@@ -172,7 +177,7 @@ const translate = () => {
         if(rlevel = value.match(/^[+-]?((\d+\.?\d*)|(\.\d+))m$/)) {
           var num = parseFloat(rlevel);
           if(locale == 'en') {
-            num = Math.round(num * 328.0839895) / 100;
+            num = Math.round(num / 0.003048) / 100;
             return num.toLocaleString(locale) + 'ft';
           }
           return num.toLocaleString(locale) + 'm';
@@ -182,6 +187,8 @@ const translate = () => {
       const key = element.getAttribute("data-i18n-dyn");
       const translation = i18n[locale][key];
       element.innerHTML = translation.format(...values);
+      document.querySelectorAll('.metric').forEach((unit)=>unit.style.display= locale=='en' ? 'none':'');
+      document.querySelectorAll('.imperial').forEach((unit)=>unit.style.display= locale=='en' ? '':'none');
     }
   });
 };

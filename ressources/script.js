@@ -102,10 +102,21 @@ function drawLevel(level) {
 
 function drawScale(level) {
   document.querySelector("#scale").innerHTML = "";
-  for (var i = level.max + 1; i >= level.min; i--) {
+  for (var i = 0; i <= level.max + 1; i++) {
     const li = document.createElement("li");
-    // li.
+    li.classList.add('metric');
     li.style.bottom = ((i - level.min) * level.step) + "px";
+    const text = document.createTextNode(i);
+    li.appendChild(text);
+    document.querySelector("#scale").appendChild(li);
+  }
+  feetstep = level.step * 0.3048;
+  feetmax = Math.floor((level.max + 1) / 0.3048);
+  feetmin = level.min / 0.3048;
+  for( var i = 0; i <= feetmax + 1; i++){
+    const li = document.createElement("li");
+    li.classList.add('imperial');
+    li.style.bottom = ((i - feetmin) * feetstep) + "px";
     const text = document.createTextNode(i);
     li.appendChild(text);
     document.querySelector("#scale").appendChild(li);
@@ -180,11 +191,12 @@ function drawTimes(level) {
   while (go == flux && i < level.data.length - 1) {
     go = level.data[i + 1][1] < level.data[i][1];
     var li = document.createElement("li");
-    li.innerHTML = `<span class="label">${level.data[i][0].substring(0, 5)}</span>`
+    li.innerHTML = `<span class="label" data-i18n-dyn="content" data-values="${level.data[i][0].substring(0, 5)}"></span>`;
     li.style.bottom = (level.data[i][1] - level.min) * level.step + "px";
     document.querySelector("#times").appendChild(li);
     i++;
   }
+  translate();
   level.view.querySelector("#times").style.background = `linear-gradient(0deg, lime 0, lime ${(2.4 - level.min) * level.step}px, orange ${(2.5 - level.min) * level.step}px, orange ${(2.7 - level.min) * level.step}px, red ${(2.8 - level.min) * level.step}px, red 100%)`;
 }
 
@@ -198,7 +210,7 @@ function drawCar(level) {
   anim.src = `ressources/svg/car${car}.svg`;
   setTimeout(function () {
     setRootCss("--main-car", `${anim.offsetWidth}px`);
-    anim.classList.add('left');
+    anim.classList.add(direction);
   }, 500);
   anim.addEventListener("animationend", () => {
     anim.remove();

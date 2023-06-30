@@ -91,6 +91,11 @@ div.panel#level #scale {
     font-size: 5vmin;
 }
 
+div.panel#level #scale li.imperial {
+    font-size: 2.8vmin;
+    width: 3vmin;
+}
+
 div.panel#level #scale li {
     position: absolute;
     padding: 0 1vmin;
@@ -123,16 +128,16 @@ div.panel#level #times li:not(:first-of-type) {
 div.panel#level #times li:not(:first-of-type):hover {
     border-bottom: 3px solid white;
     color: inherit;
-    width: 40vmin;
+    width: 100vw;
     right: 0;
-    text-align: left;
+    text-align: right;
+    padding-right: 9vw;
 }
 
 div.panel#level #times li:not(:first-of-type):hover span.label {
     background-color: black;
     padding: 0 10px;
     border-radius: 10px;
-    ;
 }
 
 div.panel#level #times li:first-of-type img {
