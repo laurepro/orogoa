@@ -8,7 +8,6 @@
     <link rel="manifest" href="/manifest.json">
     <style id="rootstyle"></style>
     <link rel="stylesheet" href="ressources/orogoa.css" />
-    <script>if('serviceWorker' in navigator) { navigator.serviceWorker .register('ressources/sw.js') .then(function() { console.log("Service Worker Registered"); }); } </script>
     <script src="ressources/i18n.js"></script>
     <script src="ressources/orogoa.js"></script>
   </head>
@@ -78,5 +77,10 @@
         <li id="es"><img src="ressources/svg/es.svg" /></li>
       </ul>
     </nav>
+<script>
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js', { scope: '/' });
+}
+</script>
   </body>
 </html>

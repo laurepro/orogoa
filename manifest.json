@@ -4,6 +4,7 @@
   "short_name": "Orogoa",
   "description": "Petite application ludique mais néanmoins utile à la préservation des personnes et des véhicules relative à la submersion du passage du Gois",
   "start_url": "/",
+  "id": "/",
   "background_color": "#2f3d58",
   "theme_color": "#2f3d58",
   "orientation": "portrait",
