@@ -1,0 +1,12 @@
+{
+  "lang": "fr-fr",
+  "name": "Horaires de passage du Gois",
+  "short_name": "Orogoa",
+  "description": "Petite application ludique mais néanmoins utile à la préservation des personnes et des véhicules relative à la submersion du passage du Gois" ,
+  "start_url": "/",
+  "background_color": "#2f3d58",
+  "theme_color": "#2f3d58",
+  "orientation": "protrait",
+  "display": "standalone",
+  "icons": [{ "src": "/ressources/icon512.png", "sizes": "512x512" }]
+}
