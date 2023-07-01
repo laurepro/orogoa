@@ -23,6 +23,25 @@ ul {
     list-style: none;
 }
 
+ul.presentation>li{
+	margin: 1rem 0;
+}
+
+div#shom {
+	width:100%;
+	height:auto;
+	overflow-x: scroll;
+}
+
+li.paypal form {
+	border:1px solid silver;
+	width: 200px;
+	display: inline-block;
+	padding: 0.5rem;
+	height: 50px;
+	border-radius: 0.25rem;
+	background-color: whitesmoke;
+}
 li.disclaimer {
     padding: 5vmin;
     text-align: justify;

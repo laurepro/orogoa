@@ -24,6 +24,22 @@ window.addEventListener("load", () => {
       drawLevel(level);
     }, 100);
   });
+  var times = document.querySelector("#times");
+  times.addEventListener('touchmove',(e)=>{
+  	var rect = times.getBoundingClientRect();
+  	var height = rect.height - e.touches[0].clientY + rect.top;
+  	var pos = 0, sli = null;
+  	times.querySelectorAll('li').forEach((li)=>{
+  		var pli = parseInt(li.style.bottom);
+  		if(pli < height){
+  			pos = Math.max(pos,pli);
+  			if(pos == pli) {
+  				sli = li;
+  			}
+  		}
+  	});
+	sli.dispatchEvent(new Event("mousemove"));
+  });
 });
 
 var roots = {};

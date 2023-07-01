@@ -1,86 +1,93 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="shortcut icon" href="favicon.ico" />
-    <title>Orogoa</title> 
-    <link rel="manifest" href="/manifest.json">
-    <style id="rootstyle"></style>
-    <link rel="stylesheet" href="ressources/orogoa.css" />
-    <script src="ressources/i18n.js"></script>
-    <script src="ressources/orogoa.js"></script>
-  </head>
-  <body>
-    <nav id="tabs">
-      <ul>
-        <li id="level" data-i18n="level"></li>
-        <li id="time" data-i18n="time"></li>
-        <!-- <li id="map" data-i18n="map"></li> -->
-        <li id="credits" data-i18n="credits"></li>
-      </ul>
-    </nav>
-    <div id="panels">
-      <div id="level" class="panel active">
-        <div id="sand"></div>
-        <div id="road"></div>
-        <div id="waves"></div>
-        <ul id="scale"></ul>
-        <ul id="times"></ul>
-      </div>
-      <div id="time" class="panel active">
-        <br />
-        <ul>
-          <li id="now" data-i18n-dyn="now"></li>
-          <li id="above" data-i18n-dyn="above"></li>
-          <li id="under" data-i18n-dyn="under"></li>
-          <li id="next" data-i18n="next"></li>
-          <li id="range" data-i18n-dyn="range"></li>
-          <li id="current" data-i18n-dyn="current"></li>
-          <li id="tomorrow" data-i18n="tomorrow"></li>
-        </ul>
-        <br />
-        <script src="https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr"></script>
-      </div>
-      <!-- <div id="map" class="panel">map</div> -->
-      <div id="credits" class="panel">
-        <span data-i18n="paypal"></span>
-        <form action="https://www.paypal.com/donate" method="post" target="_top">
-          <input type="hidden" name="business" value="KYEPA7526THCW" />
-          <input type="hidden" name="no_recurring" value="1" />
-          <input type="hidden" name="item_name" value="Achetez moi un cafe" />
-          <input type="hidden" name="currency_code" value="EUR" />
-          <input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Bouton Faites un don avec PayPal" />
-          <img alt="" border="0" src="https://www.paypal.com/fr_FR/i/scr/pixel.gif" width="1" height="1" />
-        </form>
-        <ul id="en">
-          <li>&copy; <a href="https://github.com/laurepro" target="github">Laurent PROTT</a><br /><br /></li>
-          <li>
-            <span data-i18n="data"></span>
-            <br />
-            <a href="https://services.data.shom.fr/" target="shom"> <span data-i18n="shom"></span> API SHOM</a>
-          </li>
-          <li>
-            <span data-i18n="cars"></span> 
-            <br />
-            <a href="http://www.freepik.com" target="freepik"><span data-i18n="design"></span> Freepik</a>
-          </li>
-          <li class="disclaimer" data-i18n="disclamer"></li>
-        </ul>
-      </div>
-    </div>
-    <nav id="locales">
-      <ul>
-        <li id="fr"><img src="ressources/svg/fr.svg" /></li>
-        <li id="en"><img src="ressources/svg/gb.svg" /></li>
-        <li id="de"><img src="ressources/svg/de.svg" /></li>
-        <li id="es"><img src="ressources/svg/es.svg" /></li>
-      </ul>
-    </nav>
-<script>
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js', { scope: '/' });
-}
-</script>
-  </body>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<link rel="shortcut icon" href="favicon.ico" />
+	<title>Orogoa</title>
+	<link rel="manifest" href="/manifest.json">
+	<style id="rootstyle"></style>
+	<link rel="stylesheet" href="ressources/orogoa.css" />
+	<script src="ressources/i18n.js"></script>
+	<script src="ressources/orogoa.js"></script>
+</head>
+
+<body>
+	<nav id="tabs">
+		<ul>
+			<li id="level" data-i18n="level"></li>
+			<li id="time" data-i18n="time"></li>
+			<!-- <li id="map" data-i18n="map"></li> -->
+			<li id="credits" data-i18n="credits"></li>
+		</ul>
+	</nav>
+	<div id="panels">
+		<div id="level" class="panel active">
+			<div id="sand"></div>
+			<div id="road"></div>
+			<div id="waves"></div>
+			<ul id="scale"></ul>
+			<ul id="times"></ul>
+		</div>
+		<div id="time" class="panel active">
+			<ul class="presentation">
+				<li id="now" data-i18n-dyn="now"></li>
+				<li id="above" data-i18n-dyn="above"></li>
+				<li id="under" data-i18n-dyn="under"></li>
+				<li id="next" data-i18n="next"></li>
+				<li id="range" data-i18n-dyn="range"></li>
+				<li id="current" data-i18n-dyn="current"></li>
+				<li id="tomorrow" data-i18n="tomorrow"></li>
+			</ul>
+			<div id="shom">
+			<script src="https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr"></script>
+			</div>
+		</div>
+		<!-- <div id="map" class="panel">map</div> -->
+		<div id="credits" class="panel">
+			<ul class="presentation">
+				<li>&copy; <a href="https://github.com/laurepro" target="github">Laurent PROTT</a></li>
+				<li data-i18n="paypal"></li>
+				<li class="paypal">
+					<form action="https://www.paypal.com/donate" method="post" target="_top">
+						<input type="hidden" name="business" value="KYEPA7526THCW" />
+						<input type="hidden" name="no_recurring" value="1" />
+						<input type="hidden" name="item_name" value="Achetez moi un cafe" />
+						<input type="hidden" name="currency_code" value="EUR" />
+						<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Bouton Faites un don avec PayPal" />
+						<img alt="" border="0" src="https://www.paypal.com/fr_FR/i/scr/pixel.gif" width="1" height="1" />
+					</form>
+				</li>
+				<li>
+					<span data-i18n="data"></span>
+					<br />
+					<a href="https://services.data.shom.fr/" target="shom"> <span data-i18n="shom"></span> API SHOM</a>
+				</li>
+				<li>
+					<span data-i18n="cars"></span>
+					<br />
+					<a href="http://www.freepik.com" target="freepik"><span data-i18n="design"></span> Freepik</a>
+				</li>
+				<li class="disclaimer" data-i18n="disclamer"></li>
+			</ul>
+		</div>
+	</div>
+	<nav id="locales">
+		<ul>
+			<li id="fr"><img src="ressources/svg/fr.svg" /></li>
+			<li id="en"><img src="ressources/svg/gb.svg" /></li>
+			<li id="de"><img src="ressources/svg/de.svg" /></li>
+			<li id="es"><img src="ressources/svg/es.svg" /></li>
+		</ul>
+	</nav>
+	<script>
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/sw.js', {
+				scope: '/'
+			});
+		}
+	</script>
+</body>
+
 </html>
