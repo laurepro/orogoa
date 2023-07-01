@@ -53,6 +53,7 @@ function calculateView() {
     level.min = Math.floor(Math.min(hor[1], level.min));
     level.max = Math.floor(Math.max(hor[1], level.max));
   });
+  level.max++;
   level.view = document.querySelector("div.panel#level");
   level.height = level.view.offsetHeight;
   level.width = level.view.offsetWidth;
