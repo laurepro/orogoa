@@ -44,6 +44,7 @@ const i18n = {
   },
   en: {
     content: "{0}",
+    paypal: "Do you like this app?<br/>Buy me a coffee!",
     shom: "Provided by",
     design: 'Designed by',
     data: "tides data",
@@ -77,6 +78,7 @@ const i18n = {
   },
   de: {
     content: "{0}",
+    paypal: "Magst du diese App?<br/>Kauf mir einen Kaffee!",
     shom: "Zur Verfügung gestellt von",
     design: "entworfen von",
     data: "Gezeitendaten",
@@ -110,6 +112,7 @@ const i18n = {
   },
   es: {
     content: "{0}",
+    paypal: "¿Te gusta esta app?<br/>¡Cómprame un café!",
     shom: "Proporcionado por",
     design: "diseñada por",
     data: "datos de mareas",
