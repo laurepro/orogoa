@@ -11,6 +11,7 @@ const i18n = {
   fr: {
     content: "{0}",
     paypal: "Cette application vous plait ?<br>Offrez moi un café !",
+    share: "Partagez votre expérience !",
     shom: "Fournies par",
     design: 'Conçues par',
     data: "données de marée",
@@ -45,6 +46,7 @@ const i18n = {
   en: {
     content: "{0}",
     paypal: "Do you like this app?<br/>Buy me a coffee!",
+    share: "Share your experience!",
     shom: "Provided by",
     design: 'Designed by',
     data: "tides data",
@@ -52,7 +54,7 @@ const i18n = {
     level: "level",
     time: "time",
     map: "map",
-    credits: "crédits",
+    credits: "credits",
     now: "at {0} the sea is {1} high",
     above: "{0} above the road",
     under: "{0} lower than the road",
@@ -79,6 +81,7 @@ const i18n = {
   de: {
     content: "{0}",
     paypal: "Magst du diese App?<br/>Kauf mir einen Kaffee!",
+    share: "Teile deine Erfahrung!",
     shom: "Zur Verfügung gestellt von",
     design: "entworfen von",
     data: "Gezeitendaten",
@@ -113,6 +116,7 @@ const i18n = {
   es: {
     content: "{0}",
     paypal: "¿Te gusta esta app?<br/>¡Cómprame un café!",
+    share: "¡Comparte tu experiencia!",
     shom: "Proporcionado por",
     design: "diseñada por",
     data: "datos de mareas",

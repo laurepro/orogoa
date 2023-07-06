@@ -1,3 +1,35 @@
+Date.prototype.hms = function () {
+	return `${this.getHours().pad(2)}:${this.getMinutes().pad(2)}:${this.getSeconds().pad(2)}`;
+}
+
+Date.prototype.hm = function () {
+	return `${this.getHours().pad(2)}:${this.getMinutes().pad(2)}`;
+}
+
+Number.prototype.pad = function (pad) {
+	return this.toString().padStart(pad, "0");
+}
+
+
+const registerServiceWorker = async () => {
+	if ("serviceWorker" in navigator) {
+		try {
+			const registration = await navigator.serviceWorker.register("/sw.js", {
+				scope: "/",
+			});
+			if (registration.installing) {
+				console.log("Installation du service worker en cours");
+			} else if (registration.waiting) {
+				console.log("Service worker installé");
+			} else if (registration.active) {
+				console.log("Service worker actif");
+			}
+		} catch (error) {
+			console.error(`L'enregistrement a échoué : ${error}`);
+		}
+	}
+};
+
 var panels,
 	tabs,
 	panelname = localStorage.getItem("panel") || "level";
@@ -16,7 +48,7 @@ window.addEventListener("load", () => {
 	var level = calculateView();
 	drawLevel(level);
 	drawCar(level);
-	setTimeout(function() {
+	setInterval(function() {
 		if ((new Date()).getDay() != parseInt(localStorage.getItem('shom'))) {
 			location.reload();
 		} else {
@@ -63,7 +95,7 @@ window.addEventListener("load", () => {
 
 var roots = {};
 
-function setRootCss(key, value) {
+const setRootCss = (key, value) => {
 	roots[key] = value;
 	var root = "";
 	for (const [key, value] of Object.entries(roots)) {
@@ -72,7 +104,7 @@ function setRootCss(key, value) {
 	document.querySelector("#rootstyle").innerText = `:root {${root}}`;
 }
 
-function changePanel(panelname) {
+const changePanel = (panelname) => {
 	tabs.querySelectorAll(".active").forEach((tab) => tab.classList.remove("active"));
 	panels.querySelectorAll(".active").forEach((panel) => panel.classList.remove("active"));
 	tabs.querySelector(`[id="${panelname}"]`).classList.add("active");
@@ -80,7 +112,7 @@ function changePanel(panelname) {
 	localStorage.setItem("panel", panelname);
 }
 
-function calculateView() {
+const calculateView = () => {
 	document.querySelector("div.panel#level").classList.add("active");
 	var level = {
 		data: [],
@@ -101,9 +133,22 @@ function calculateView() {
 	level.step = level.height / level.max;
 	setRootCss("--main-step", `${level.step}px`);
 	setRootCss("--main-bottom", `-${level.min * level.step}px`);
-	document
-		.getElementById(rid)
-		.contentDocument.querySelectorAll(".hlt.hltOfTheDay .table-striped tbody tr")
+	var todayTides = extractTide(
+		document.getElementById(rid).contentDocument.querySelector("#data-container .hlt.hltOfTheDay table"),
+		0
+	);
+	var tomorrowTides = extractTide(
+		document.getElementById(rid).contentDocument.querySelector("#data-container .hlt:not(.hltOfTheDay) table"),
+		1
+	);
+	level.tides = todayTides.concat(tomorrowTides);
+	changePanel(panelname);
+	return level;
+}
+
+const extractTide = (table, upday) => {
+	var tides = [];
+	table.querySelectorAll("tbody tr")
 		.forEach(function(tide) {
 			var td = tide.querySelectorAll("td");
 			if (td.length > 0) {
@@ -112,37 +157,29 @@ function calculateView() {
 						.trim()
 						.split(":")
 						.map((v) => parseInt(v));
-					var mt = minute + 30;
-					var ht = hour + 1 + Math.floor(mt / 60);
-					mt = mt % 60;
-					ht = ht % 24;
-					var ml = minute - 30;
-					var hl = hour - 1;
-					if (ml < 0) {
-						ml += 60;
-						hl -= 1;
-					}
-					if (hl < 0) {
-						hl += 24;
-					}
-					level.tides.push({
-						tide: `${padTime(hour)}:${padTime(minute)}:00`,
-						start: `${padTime(hl)}:${padTime(ml)}:00`,
-						stop: `${padTime(ht)}:${padTime(mt)}:00`,
+					var inNow = new Date();
+					inNow.setHours(hour);
+					inNow.setMinutes(minute);
+					var inTime = (Math.round(inNow.getTime() / 1000) * 1000) + (upday * 86400000)
+					var inStart = inTime - 5400000;
+					var inStop = inTime + 5400000;
+					tides.push({
+						tide: inTime,
+						start: inStart,
+						stop: inStop,
 					});
 				}
 			}
 		});
-	changePanel(panelname);
-	return level;
+	return tides;
 }
 
-function drawLevel(level) {
+const drawLevel = (level) => {
 	drawScale(level);
 	drawSea(level);
 }
 
-function drawScale(level) {
+const drawScale = (level) => {
 	document.querySelector("#scale").innerHTML = "";
 	for (var i = 0; i <= level.max + 1; i++) {
 		const li = document.createElement("li");
@@ -166,17 +203,16 @@ function drawScale(level) {
 	level.view.querySelector("#scale").style.background = `linear-gradient(0deg, lime 0, lime ${(2.4 - level.min) * level.step}px, orange ${(2.5 - level.min) * level.step}px, orange ${(2.7 - level.min) * level.step}px, red ${(2.8 - level.min) * level.step}px, red 100%)`;
 }
 
-function drawSea(level) {
-	const now = new Date(Date.now());
-	level.now = `${padTime(now.getHours())}:${padTime(now.getMinutes())}:${padTime(now.getSeconds())}`;
+const drawSea = (level) => {
+	const now = new Date();
 	level.current = 0;
 	level.data.forEach(function(step, index) {
-		if (level.current == 0 && step[0] > level.now) {
+		if (level.current == 0 && step[0] > now.hms()) {
 			level.current = index;
 		}
 	});
 	var high = level.data[level.current][1];
-	document.querySelector("#now").dataset.values = [level.now.substring(0, 5), high + "m"];
+	document.querySelector("#now").dataset.values = [now.hm(), high + "m"];
 	document.querySelector("#above").dataset.values = [high - 3 + "m"];
 	document.querySelector("#above").style.display = high > 3 ? "" : "none";
 	document.querySelector("#under").dataset.values = [Math.abs(high - 3) + "m"];
@@ -184,12 +220,12 @@ function drawSea(level) {
 	var tide = false,
 		next = false;
 	level.tides.forEach((range) => {
-		if (range.stop > level.now) {
+		if (range.stop > now.getTime()) {
 			if (!tide) {
-				document.querySelector("#range").dataset.values = [range.start.substring(0, 5), range.stop.substring(0, 5)];
-				document.querySelector("#current").dataset.values = [range.start.substring(0, 5), range.stop.substring(0, 5)];
+				document.querySelector("#range").dataset.values = [(new Date(range.start)).hm(), (new Date(range.stop)).hm()];
+				document.querySelector("#current").dataset.values = [(new Date(range.start)).hm(), (new Date(range.stop)).hm()];
 				tide = true;
-				if (range.start < level.now) {
+				if (range.start < now.getTime()) {
 					next = true;
 				}
 			}
@@ -225,14 +261,19 @@ function drawSea(level) {
 	var pathes = waves.join("");
 	level.view.querySelector("#waves").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="sea" x="0px" y="0px" viewBox="0 0 ${level.width} ${level.height}" style="enable-background:new 0 0 ${level.width} ${level.height};" xml:space="preserve"><style type="text/css">.wave{opacity:0.5;fill:#0C3157;enable-background:new;}</style>${pathes}</svg>`;
 	drawTimes(level);
+	geolocalize();
 	translate();
 }
 
-function padTime(number) {
-	return number.toString().padStart(2, "0");
+const geolocalize = () => {
+	if ("geolocation" in navigator) {
+		navigator.geolocation.getCurrentPosition((position) => {
+			console.log(position.coords.latitude, position.coords.longitude);
+		});
+	}
 }
 
-function drawTimes(level) {
+const drawTimes = (level) => {
 	var next = Math.min(level.current + 1, level.data.length - 1);
 	var flux = level.data[next][1] < level.data[level.current][1];
 	var direction = document.createElement("li");
@@ -253,7 +294,7 @@ function drawTimes(level) {
 	level.view.querySelector("#times").style.background = `linear-gradient(0deg, lime 0, lime ${(2.4 - level.min) * level.step}px, orange ${(2.5 - level.min) * level.step}px, orange ${(2.7 - level.min) * level.step}px, red ${(2.8 - level.min) * level.step}px, red 100%)`;
 }
 
-function drawCar(level) {
+const drawCar = (level) => {
 	var car = Math.floor(Math.random() * 5) + 1;
 	var direction = Math.random() > 1 / 2 ? "left" : "right";
 	var anim = document.createElement("img");
@@ -264,7 +305,7 @@ function drawCar(level) {
 	setTimeout(function() {
 		setRootCss("--main-car", `${anim.offsetWidth}px`);
 		anim.classList.add(direction);
-	}, 500);
+	}, 1000);
 	anim.addEventListener("animationend", () => {
 		anim.remove();
 		drawCar(level);

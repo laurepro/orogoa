@@ -44,7 +44,7 @@
 			<script src="https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr"></script>
 			</div>
 		</div>
-		 <div id="map" class="panel">map</div> 
+		 <div id="map" class="panel"><img src="ressources/map.png"></div> 
 		<div id="credits" class="panel">
 			<ul class="presentation">
 				<h1>OROGOA</h1>
@@ -70,6 +70,11 @@
 					<br />
 					<a href="http://www.freepik.com" target="freepik"><span data-i18n="design"></span> Freepik</a>
 				</li>
+				<li>
+					<span data-i18n="share"></span>
+					<br/>
+					<img id="qrcode" src="ressources/qrcode_orogoa.laurepro.fr.png">
+				</li>
 				<li class="disclaimer" data-i18n="disclamer"></li>
 			</ul>
 		</div>
@@ -82,13 +87,9 @@
 			<li id="es"><img src="ressources/svg/es.svg" /></li>
 		</ul>
 	</nav>
-	<script>
-		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('/sw.js', {
-				scope: '/'
-			});
-		}
-	</script>
+<script>
+registerServiceWorker();
+</script>
 </body>
 
 </html>
