@@ -6,7 +6,7 @@
 html,
 body {
 	background-color: black;
-	font: small-caps bold 5vmin sans-serif;
+	font: small-caps bold 4vmin sans-serif;
 	color: white;
 	text-align: center;
 	position: relative;
@@ -15,12 +15,34 @@ body {
 	overflow: hidden;
 }
 
-body nav {
-	background-color: black;
+.hidden {
+	display: none;
+}
+
+body>nav {
+	background-color: whitesmoke;
+	color: DarkSlateGray;
+}
+
+body>nav:first-of-type {
+	border-bottom: 1px solid DarkSlateGray;
+	box-shadow: inset 0 -10px 10px -10px DarkSlateGray;
+}
+
+body>nav:last-of-type {
+	border-top: 1px solid DarkSlateGray;
+	box-shadow: inset 0 10px 10px -10px DarkSlateGray;
 }
 
 ul {
 	list-style: none;
+}
+
+div#level.panel ul.presentation {
+	width: 100%;
+	text-align: center;
+	position: absolute;
+	color: black;
 }
 
 ul.presentation>li {
@@ -28,7 +50,20 @@ ul.presentation>li {
 }
 
 #qrcode {
-	max-width: 100vw;
+	max-width: 90vw;
+}
+
+div#map.panel {
+	position: relative;
+}
+
+div#map.panel>div#gps {
+	position: absolute;
+	width: 50px;
+	height: 50px;
+	background-image: url(svg/gps.svg);
+	line-height: 2.3rem;
+	color: black;
 }
 
 div#shom {
@@ -72,19 +107,22 @@ nav>ul>li {
 	display: inline-block;
 	width: 30vw;
 	text-align: center;
-	height: 9vmin;
-	font-size: 7vmin;
+	height: 7vmin;
+	font-size: 5vmin;
 	cursor: pointer;
+	margin: 1vmin;
 }
 
 nav>ul>li>img {
-	height: calc(9vmin - 6px);
-	border: 3px solid white;
+	height: calc(7vmin - 6px);
+	border: 3px solid transparent;
 	pointer-events: none;
 }
 
 nav>ul>li.active {
 	background-color: blue;
+	color: whitesmoke;
+	border-radius: 2vmin;
 }
 
 div.panel {
@@ -98,7 +136,15 @@ div.panel.active {
 	display: block;
 }
 
-div.panel#level {
+div#credits.panel a {
+	color: yellow;
+}
+
+div#credits.panel a:visited {
+	color: orange;
+}
+
+div#level.panel {
 	position: relative;
 	text-align: initial;
 	margin: 0;
@@ -107,7 +153,7 @@ div.panel#level {
 	overflow: hidden;
 }
 
-div.panel#level #scale {
+div#level.panel #scale {
 	position: absolute;
 	height: 100%;
 	width: 5vmin;
@@ -115,19 +161,19 @@ div.panel#level #scale {
 	font-size: 5vmin;
 }
 
-div.panel#level #scale li.imperial {
+div#level.panel #scale li.imperial {
 	font-size: 2.8vmin;
 	width: 3vmin;
 }
 
-div.panel#level #scale li {
+div#level.panel #scale li {
 	position: absolute;
 	padding: 0 1vmin;
 	text-align: center;
 	border-bottom: 1px solid black;
 }
 
-div.panel#level #times {
+div#level.panel #times {
 	position: absolute;
 	right: 0;
 	height: 100%;
@@ -136,7 +182,7 @@ div.panel#level #times {
 	z-index: 10;
 }
 
-div.panel#level #times li {
+div#level.panel #times li {
 	text-align: center;
 	position: absolute;
 	width: 100%;
@@ -144,7 +190,7 @@ div.panel#level #times li {
 	font-size: 9vmin;
 }
 
-div.panel#level #times li:not(:first-of-type) {
+div#level.panel #times li:not(:first-of-type) {
 	color: transparent;
 	border-bottom: 1px solid black;
 }
@@ -152,7 +198,7 @@ div.panel#level #times li:not(:first-of-type) {
 /* smartphones, touchscreens */
 @media (hover: none) and (pointer: coarse) {
 
-	div.panel#level #times li:not(:first-of-type).hover {
+	div#level.panel #times li:not(:first-of-type).hover {
 		border-bottom: 3px solid white;
 		color: inherit;
 		width: 100vw;
@@ -161,7 +207,7 @@ div.panel#level #times li:not(:first-of-type) {
 		padding-right: 9vw;
 	}
 
-	div.panel#level #times li:not(:first-of-type).hover span.label {
+	div#level.panel #times li:not(:first-of-type).hover span.label {
 		background-color: black;
 		padding: 0 10px;
 		border-radius: 10px;
@@ -176,7 +222,7 @@ div.panel#level #times li:not(:first-of-type) {
 /* mouse, touch pad */
 @media (hover: hover) and (pointer: fine) {
 
-	div.panel#level #times li:not(:first-of-type):hover {
+	div#level.panel #times li:not(:first-of-type):hover {
 		border-bottom: 3px solid white;
 		color: inherit;
 		width: 100vw;
@@ -185,7 +231,7 @@ div.panel#level #times li:not(:first-of-type) {
 		padding-right: 9vw;
 	}
 
-	div.panel#level #times li:not(:first-of-type):hover span.label {
+	div#level.panel #times li:not(:first-of-type):hover span.label {
 		background-color: black;
 		padding: 0 10px;
 		border-radius: 10px;
@@ -193,15 +239,15 @@ div.panel#level #times li:not(:first-of-type) {
 }
 
 
-div.panel#level #times li:first-of-type img {
+div#level.panel #times li:first-of-type img {
 	width: 10vmin;
 }
 
-div.panel#level #times li:first-of-type img.down {
+div#level.panel #times li:first-of-type img.down {
 	transform: rotateX(180deg);
 }
 
-div.panel#level #sand {
+div#level.panel #sand {
 	position: absolute;
 	width: 100%;
 	bottom: var(--main-bottom);
@@ -209,7 +255,7 @@ div.panel#level #sand {
 	background-color: #C2B280;
 }
 
-div.panel#level #road {
+div#level.panel #road {
 	position: absolute;
 	width: 100%;
 	background-color: black;
@@ -217,7 +263,7 @@ div.panel#level #road {
 	bottom: calc(var(--main-step) * 2.7 + var(--main-bottom))
 }
 
-div.panel#level #waves {
+div#level.panel #waves {
 	width: 100%;
 	height: 100%;
 	position: absolute;

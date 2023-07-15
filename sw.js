@@ -12,7 +12,7 @@ self.addEventListener('fetch', event => {
 	event.respondWith((async () => {
 		const cache = await caches.open(CACHE_NAME);
 		// network forcing for shom script
-		if (event.request.url == 'https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr') {
+		if (event.request.url == 'https://services.data.shom.fr/hdm/vignette/grande/L_HERBAUDIERE?locale=fr') {
 			try {
 				const fetchResponse = await fetch(event.request);
 				return fetchResponse;

@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 	<link rel="shortcut icon" href="favicon.ico" />
 	<title>Orogoa</title>
 	<link rel="manifest" href="/manifest.json">
@@ -18,12 +18,17 @@
 		<ul>
 			<li id="level" data-i18n="level"></li>
 			<li id="time" data-i18n="time"></li>
-			 <li id="map" data-i18n="map"></li> 
+			<li id="map" data-i18n="map"></li>
 			<li id="credits" data-i18n="credits"></li>
 		</ul>
 	</nav>
 	<div id="panels">
 		<div id="level" class="panel active">
+			<ul class="presentation">
+				<li id="now" data-i18n-dyn="now"></li>
+				<li id="above" data-i18n-dyn="above"></li>
+				<li id="under" data-i18n-dyn="under"></li>
+			</ul>
 			<div id="sand"></div>
 			<div id="road"></div>
 			<div id="waves"></div>
@@ -32,19 +37,19 @@
 		</div>
 		<div id="time" class="panel active">
 			<ul class="presentation">
-				<li id="now" data-i18n-dyn="now"></li>
-				<li id="above" data-i18n-dyn="above"></li>
-				<li id="under" data-i18n-dyn="under"></li>
 				<li id="next" data-i18n="next"></li>
 				<li id="range" data-i18n-dyn="range"></li>
 				<li id="current" data-i18n-dyn="current"></li>
 				<li id="tomorrow" data-i18n="tomorrow"></li>
 			</ul>
 			<div id="shom">
-			<script src="https://services.data.shom.fr/hdm/vignette/grande/FROMENTINE_EMBARCADERE?locale=fr"></script>
+				<script src="https://services.data.shom.fr/hdm/vignette/grande/L_HERBAUDIERE?locale=fr"></script>
 			</div>
 		</div>
-		 <div id="map" class="panel"><img src="ressources/map.png"></div> 
+		<div id="map" class="panel">
+			<div id="gps"></div>
+			<img src="ressources/map.png" data-scale="100">
+		</div>
 		<div id="credits" class="panel">
 			<ul class="presentation">
 				<h1>OROGOA</h1>
@@ -61,6 +66,12 @@
 					</form>
 				</li>
 				<li>
+					<span data-i18n="info"></span><br />
+					<span data-i18n="pass"></span><br />
+					<span data-i18n="tide"></span>
+				</li>
+				<li><a href="https://www.vision-environnement.com/live/player/V3/gois/live.php#">Webcam</a></li>
+				<li>
 					<span data-i18n="data"></span>
 					<br />
 					<a href="https://services.data.shom.fr/" target="shom"> <span data-i18n="shom"></span> API SHOM</a>
@@ -72,7 +83,7 @@
 				</li>
 				<li>
 					<span data-i18n="share"></span>
-					<br/>
+					<br />
 					<img id="qrcode" src="ressources/qrcode_orogoa.laurepro.fr.png">
 				</li>
 				<li class="disclaimer" data-i18n="disclamer"></li>
@@ -87,9 +98,9 @@
 			<li id="es"><img src="ressources/svg/es.svg" /></li>
 		</ul>
 	</nav>
-<script>
-registerServiceWorker();
-</script>
+	<script>
+		//registerServiceWorker();
+	</script>
 </body>
 
 </html>
