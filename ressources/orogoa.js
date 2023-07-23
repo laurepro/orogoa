@@ -45,21 +45,6 @@ window.addEventListener("load", () => {
 		document.querySelector("#rootstyle").innerText = `:root {${root}}`;
 	}
 
-	const mapSize = {
-		height: document.querySelector('div#map.panel img').naturalHeight,
-		width: document.querySelector('div#map.panel img').naturalWidth
-	}
-
-	const mapScale = () => {
-		return document.querySelector('div#map.panel').clientHeight / mapSize.height * 100;
-	}
-
-	const resizeMap = (scale) => {
-		scale = Math.min(Math.max(mapScale(), scale), 100);
-		document.querySelector('div#map.panel img').style = `height:${mapSize.height * scale / 100}px;`;
-		geolocalize(scale);
-		return scale;
-	}
 
 	const changePanel = (panelname) => {
 		document.querySelector("nav#tabs ul").querySelectorAll(".active").forEach((tab) => tab.classList.remove("active"));
@@ -199,7 +184,7 @@ window.addEventListener("load", () => {
 					}
 				}
 			}
-			document.querySelector("#tomorrow").style.display = (new Date(tide)).getDay() == now.getDay() ? "none" : "";
+			document.querySelector("#tomorrow").style.display = (new Date(range.start)).getDay() == now.getDay() ? "" : "none";
 			document.querySelector("#current").style.display = next ? "" : "none";
 			document.querySelector("#next").style.display = next ? "none" : "";
 			document.querySelector("#range").style.display = next ? "none" : "";
@@ -223,7 +208,7 @@ window.addEventListener("load", () => {
 				pos: (level.width / 3) * 2,
 				beg: "0s"
 			},
-		].forEach(function(w) {
+		].forEach((w) => {
 			waves.push(`<path class="wave" d="M 0 ${sea} C ${w.pos} ${sea + 50} ${w.pos} ${sea - 50} ${level.width} ${sea} L ${level.width} ${level.height} L 0 ${level.height} L 0 ${sea}"><animate attributeName="d" dur="5s" begin="${w.beg}" values="M 0 ${sea} C ${w.pos} ${sea - 50} ${w.pos} ${sea + 50} ${level.width} ${sea} L ${level.width} ${level.height} L 0 ${level.height} L 0 ${sea}; M 0 ${sea} C ${w.pos} ${sea + 50} ${w.pos} ${sea - 50} ${level.width} ${sea} L ${level.width} ${level.height} L 0 ${level.height} L 0 ${sea}; M 0 ${sea} C ${w.pos} ${sea - 50} ${w.pos} ${sea + 50} ${level.width} ${sea} L ${level.width} ${level.height} L 0 ${level.height} L 0 ${sea}" repeatCount="indefinite" /></path>`);
 		});
 
@@ -231,40 +216,6 @@ window.addEventListener("load", () => {
 		level.view.querySelector("#waves").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="sea" x="0px" y="0px" viewBox="0 0 ${level.width} ${level.height}" style="enable-background:new 0 0 ${level.width} ${level.height};" xml:space="preserve"><style type="text/css">.wave{opacity:0.5;fill:#0C3157;enable-background:new;}</style>${pathes}</svg>`;
 		drawTimes(level);
 		translate();
-	}
-
-	const inpixel = {
-		width: {
-			large: 11655,
-			left: 613,
-			right: 293
-		},
-		height: {
-			large: 17090,
-			top: 605,
-			bottom: 516
-		}
-	}
-
-	const geolocalize = (scale) => {
-		if ("geolocation" in navigator) {
-			navigator.geolocation.getCurrentPosition((position) => {
-				scale = scale / 100;
-				var p = [
-					[47, -2.166667], // 612,603
-					[47, -2.083333], // 1583,603
-					[46.916667, -2.166667], // 1583,2026
-					[46.916667, -2.083333], // 612,2026
-					[46.933865, -2.134730], // refuge
-					[46.893613, -2.148931], // pointe
-					[position.coords.latitude, position.coords.longitude]
-				];
-				var coord = p[4];
-				var point = document.querySelector('div#map.panel>div#gps');
-				point.style.top = ((mapSize.height * scale) - (((coord[0] - 46.916667) * inpixel.height.large * scale) + (inpixel.height.bottom * scale)) - 50) + 'px';
-				point.style.left = ((mapSize.width * scale) - (Math.abs(((coord[1] + 2.083333) * inpixel.width.large * scale)) + (inpixel.width.right * scale)) - 25) + 'px';
-			});
-		}
 	}
 
 	const drawTimes = (level) => {
@@ -296,7 +247,7 @@ window.addEventListener("load", () => {
 		anim.classList.add(`car`);
 		anim.classList.add(`t${car}`);
 		anim.src = `ressources/svg/car${car}.svg`;
-		setTimeout(function() {
+		setTimeout(() => {
 			setRootCss("--main-car", `${anim.offsetWidth}px`);
 			anim.classList.add(direction);
 		}, 1000);
@@ -304,6 +255,37 @@ window.addEventListener("load", () => {
 			anim.remove();
 			drawCar(level);
 		});
+	}
+
+	const geolocalize = () => {
+		const inpixel = {
+			width: {
+				large: 11648,
+				right: 292.5
+			},
+			height: {
+				large: 17070,
+				bottom: 518
+			}
+		}
+		if ("geolocation" in navigator) {
+			navigator.geolocation.getCurrentPosition((position) => {
+				var p = [
+					[47, -2.166667], // 612,603
+					[47, -2.083333], // 1583,603
+					[46.916667, -2.166667], // 1583,2026
+					[46.916667, -2.083333], // 612,2026
+					[46.933865, -2.134730], // refuge
+					[46.893613, -2.148931], // pointe
+					[46.847667, -1.919233], // hors cadre
+					[position.coords.latitude, position.coords.longitude]
+				];
+				var coord = p[4];
+				gps.top = ((map.height) - (((coord[0] - 46.916667) * inpixel.height.large) + (inpixel.height.bottom)));
+				gps.left = ((map.width) - (Math.abs(((coord[1] + 2.083333) * inpixel.width.large)) + (inpixel.width.right)));
+				gps.make();
+			});
+		}
 	}
 
 	if (!"geolocation" in navigator) {
@@ -321,64 +303,97 @@ window.addEventListener("load", () => {
 	var level = calculateView();
 	drawLevel(level);
 	drawCar(level);
-	geolocalize(100);
+	geolocalize();
 
-	setInterval(function() {
+	setInterval(() => {
 		if ((new Date()).getDay() != parseInt(localStorage.getItem('shom'))) {
 			location.reload();
 		} else {
 			drawSea(level);
+			geolocalize();
 		}
 	}, 60000);
 
 	document.querySelector("nav#tabs ul")
 		.addEventListener("click", (event) => {
-			changePanel(event.target.id);
-		});
-
-	let curScale = 100;
-	let tmpScale = 0;
-	let hypo = undefined;
-	let map = document.querySelector('body>div#panels>div#map.panel');
-	map
-		.addEventListener('wheel', (event) => {
-			if (event.ctrlKey) {
-				if (Math.abs(event.deltaY) < 50) {
-					curScale -= event.deltaY;
-				} else {
-					curScale -= (event.deltaY / 10);
-				}
-				curScale = resizeMap(curScale);
+			if (event.target.id != '') {
+				changePanel(event.target.id);
 			}
 		});
 
-	map
-		.addEventListener('touchmove', function(event) {
+	let gps = {
+		top: 0,
+		left: 0,
+		scale: 1,
+		make: () => {
+			document.querySelector('body>div#panels>div#map.panel>svg#content>g#gps')
+				.setAttribute('transform', `translate(${gps.left},${gps.top}) scale(${gps.scale})`);
+		}
+	}
+
+	let map = {
+		scale: 100,
+		temp: 0,
+		hypo: undefined,
+		container: document.querySelector('body>div#panels>div#map.panel'),
+		img: document.querySelector('body>div#panels>div#map.panel>svg'),
+		height: 2544,
+		width: 1876,
+		min: document.querySelector('div#map.panel').clientHeight / this.height * 100,
+		resize: (scale) => {
+			min = document.querySelector('div#map.panel').clientHeight / map.height * 100;
+			scale = Math.min(Math.max(min, scale), 100);
+			map.img.style.height = (map.height * scale / 100) + 'px';
+			map.img.style.width = (map.width * scale / 100) + 'px';
+			gps.scale = 2 - (scale / 100);
+			gps.make();
+			return scale;
+		},
+	}
+	map.container
+		.addEventListener('wheel', (event) => {
+			if (event.ctrlKey) {
+				var
+					pointX = ((map.container.scrollTop + event.clientX) * map.scale / 100),
+					pointY = ((map.container.scrollTop + event.clientY) * map.scale / 100);
+				if (Math.abs(event.deltaY) < 50) {
+					map.scale -= event.deltaY;
+				} else {
+					map.scale -= (event.deltaY / 10);
+				}
+				map.scale = map.resize(map.scale);
+				// map.container.scrollTop = Math.abs(event.clientY)
+			}
+		});
+	map.container
+		.addEventListener('touchmove', (event) => {
 			if (event.targetTouches.length === 2) {
 				let hypo1 = Math.hypot((event.targetTouches[0].pageX - event.targetTouches[1].pageX),
 					(event.targetTouches[0].pageY - event.targetTouches[1].pageY));
-				if (hypo === undefined) {
-					hypo = hypo1;
+
+				if (map.hypo === undefined) {
+					map.hypo = hypo1;
 				}
-				tmpScale = resizeMap(curScale * (hypo1 / hypo));
+				map.temp = map.resize(map.scale * (hypo1 / map.hypo));
 			}
 		}, false);
-	map
-		.addEventListener('touchend', function(event) {
-			if (hypo != undefined) {
-				curScale = tmpScale;
-				hypo = undefined;
+	map.container
+		.addEventListener('touchend', (event) => {
+			if (map.hypo != undefined) {
+				map.scale = map.temp;
+				map.hypo = undefined;
 			}
 		}, false);
 
 	var doResize;
 	window
-		.addEventListener("resize", function() {
+		.addEventListener("resize", () => {
 			this.clearTimeout(doResize);
-			doResize = setTimeout(function() {
+			doResize = setTimeout(() => {
 				setRootCss("--main-height", `${window.innerHeight}px`);
 				level = calculateView();
 				drawLevel(level);
+				map.resize(map.scale);
 			}, 100);
 		});
 
@@ -412,41 +427,4 @@ window.addEventListener("load", () => {
 				li.classList.remove('hover');
 			});
 		});
-
-	let touchstartX = 0;
-	let touchendX = 0
-	let tabs = document.querySelectorAll("body>nav:first-of-type>ul>li:not(.hidden)");
-
-	panels
-		.addEventListener('touchstart', e => {
-			touchstartX = e.changedTouches[0].screenX;
-		});
-
-	panels
-		.addEventListener('touchend', e => {
-			if (event.target != map.querySelector('img')) {
-				var index = 0;
-				tabs.forEach((tab, i) => {
-					if (tab.classList.contains('active')) {
-						index = i;
-					}
-				});
-				touchendX = e.changedTouches[0].screenX
-				if (touchendX > touchstartX) {
-					index--;
-					if (index < 0) {
-						index = tabs.length - 1;
-					}
-				}
-				if (touchendX < touchstartX) {
-					index++;
-					if (index == tabs.length) {
-						index = 0;
-					}
-				}
-				changePanel(tabs[index].id);
-			}
-		});
-
-
 });
