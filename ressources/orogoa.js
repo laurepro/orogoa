@@ -339,42 +339,58 @@ window.addEventListener("load", () => {
 		img: document.querySelector('body>div#panels>div#map.panel>svg'),
 		height: 2544,
 		width: 1876,
-		min: document.querySelector('div#map.panel').clientHeight / this.height * 100,
 		resize: (scale) => {
 			min = document.querySelector('div#map.panel').clientHeight / map.height * 100;
 			scale = Math.min(Math.max(min, scale), 100);
 			map.img.style.height = (map.height * scale / 100) + 'px';
 			map.img.style.width = (map.width * scale / 100) + 'px';
-			gps.scale = 2 - (scale / 100);
+			gps.scale = 1 / (scale / 100);
 			gps.make();
+			localStorage.setItem('scale', scale);
 			return scale;
 		},
 	}
 	map.container
+		.addEventListener('scroll', (event) => {
+			localStorage.setItem('top', map.container.scrollTop);
+			localStorage.setItem('left', map.container.scrollLeft);
+		});
+	map.container
 		.addEventListener('wheel', (event) => {
 			if (event.ctrlKey) {
-				var
-					pointX = ((map.container.scrollTop + event.clientX) * map.scale / 100),
-					pointY = ((map.container.scrollTop + event.clientY) * map.scale / 100);
+				event.preventDefault();
+				event.stopPropagation();
+				let
+					pointx = (event.x + map.container.scrollLeft) / map.scale * 100,
+					pointy = (event.y + map.container.scrollTop - map.container.offsetTop) / map.scale * 100;
+
 				if (Math.abs(event.deltaY) < 50) {
 					map.scale -= event.deltaY;
 				} else {
 					map.scale -= (event.deltaY / 10);
 				}
 				map.scale = map.resize(map.scale);
-				// map.container.scrollTop = Math.abs(event.clientY)
+				map.container.scrollLeft = (pointx * map.scale / 100) - event.x;
+				map.container.scrollTop = (pointy * map.scale / 100) - event.y + map.container.offsetTop;
 			}
 		});
 	map.container
 		.addEventListener('touchmove', (event) => {
 			if (event.targetTouches.length === 2) {
+				let
+					pointx = (((event.touches[0].clientX + event.touches[1].clientX) / 2) + map.container.scrollLeft) / map.scale * 100,
+					pointy = (((event.touches[0].clientY + event.touches[1].clientY) / 2) + map.container.scrollTop) / map.scale * 100;
+					
 				let hypo1 = Math.hypot((event.targetTouches[0].pageX - event.targetTouches[1].pageX),
 					(event.targetTouches[0].pageY - event.targetTouches[1].pageY));
 
 				if (map.hypo === undefined) {
 					map.hypo = hypo1;
 				}
+				console.log(pointx, pointy);
 				map.temp = map.resize(map.scale * (hypo1 / map.hypo));
+				map.container.scrollLeft = (pointx * map.temp / 100) - event.x;
+				map.container.scrollTop = (pointy * map.temp / 100) - event.y;
 			}
 		}, false);
 	map.container
@@ -396,6 +412,10 @@ window.addEventListener("load", () => {
 				map.resize(map.scale);
 			}, 100);
 		});
+
+	map.scale = map.resize(localStorage.getItem('scale' || 0));
+	map.container.scrollTop = localStorage.getItem('top') || 0;
+	map.container.scrollLeft = localStorage.getItem('left') || 0;
 
 	var times = document.querySelector("#times");
 	times
