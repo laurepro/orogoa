@@ -1,3 +1,12 @@
+function debug() {
+	var messages = [];
+	var args = [...arguments];
+	args.forEach((arg) => {
+		messages.push(arg);
+	});
+	document.querySelector('#debug').innerHTML = messages.join('<br/>');
+}
+
 Date.prototype.hms = function() {
 	return `${this.getHours().pad(2)}:${this.getMinutes().pad(2)}:${this.getSeconds().pad(2)}`;
 }
@@ -9,7 +18,6 @@ Date.prototype.hm = function() {
 Number.prototype.pad = function(pad) {
 	return this.toString().padStart(pad, "0");
 }
-
 
 const registerServiceWorker = async () => {
 	if ("serviceWorker" in navigator) {
@@ -35,6 +43,52 @@ var panels,
 
 window.addEventListener("load", () => {
 
+	if ("geolocation" in navigator) {
+		var geolocalize = document.querySelector("div#map.panel>svg#findme");
+		geolocalize
+			.addEventListener('click', (event) => {
+				navigator.geolocation.watchPosition((position) => {
+					const inpixel = {
+						width: {
+							large: 11648,
+							right: 292.5
+						},
+						height: {
+							large: 17070,
+							bottom: 518
+						}
+					}
+					var p = [
+						[position.coords.latitude, position.coords.longitude],
+						[47, -2.166667], // 612,603
+						[47, -2.083333], // 1583,603
+						[46.916667, -2.166667], // 1583,2026
+						[46.916667, -2.083333], // 612,2026
+						[46.933865, -2.134730], // refuge
+						[46.893613, -2.148931], // pointe
+					];
+					var coord = p[5];
+					gps.top = ((map.height) - (((coord[0] - 46.916667) * inpixel.height.large) + (inpixel.height.bottom)));
+					gps.left = ((map.width) - (Math.abs(((coord[1] + 2.083333) * inpixel.width.large)) + (inpixel.width.right)));
+					gps.make();
+
+				}, (err) => {
+					console.error(`ERROR(${err.code}): ${err.message}`);
+				}, {
+					enableHighAccuracy: true,
+					timeout: 60000,
+					maximumAge: 0,
+				});
+				geolocalize.style.display = 'none';
+			});
+	} else {
+		geolocalize.style.display = 'none';
+		document.querySelectorAll('#map')
+			.forEach((m) => {
+				m.classList.add('hidden');
+			});
+	}
+
 	var roots = {};
 	const setRootCss = (key, value) => {
 		roots[key] = value;
@@ -44,7 +98,6 @@ window.addEventListener("load", () => {
 		}
 		document.querySelector("#rootstyle").innerText = `:root {${root}}`;
 	}
-
 
 	const changePanel = (panelname) => {
 		document.querySelector("nav#tabs ul").querySelectorAll(".active").forEach((tab) => tab.classList.remove("active"));
@@ -58,17 +111,12 @@ window.addEventListener("load", () => {
 		document.querySelector("div.panel#level").classList.add("active");
 		var level = {
 			data: [],
-			min: 10,
-			max: 0,
+			min: 1,
+			max: 6,
 			tides: []
 		};
 		eval(/var data = \[\[.*\]\]/.exec(document.getElementById(rid).contentDocument.querySelector("script:not([src])").textContent)[0]);
 		level.data = data;
-		level.data.forEach(function(hor) {
-			level.min = Math.floor(Math.min(hor[1], level.min));
-			level.max = Math.floor(Math.max(hor[1], level.max));
-		});
-		level.max = 6;
 		level.view = document.querySelector("div.panel#level");
 		level.height = level.view.offsetHeight;
 		level.width = level.view.offsetWidth;
@@ -257,44 +305,6 @@ window.addEventListener("load", () => {
 		});
 	}
 
-	const geolocalize = () => {
-		const inpixel = {
-			width: {
-				large: 11648,
-				right: 292.5
-			},
-			height: {
-				large: 17070,
-				bottom: 518
-			}
-		}
-		if ("geolocation" in navigator) {
-			navigator.geolocation.getCurrentPosition((position) => {
-				var p = [
-					[47, -2.166667], // 612,603
-					[47, -2.083333], // 1583,603
-					[46.916667, -2.166667], // 1583,2026
-					[46.916667, -2.083333], // 612,2026
-					[46.933865, -2.134730], // refuge
-					[46.893613, -2.148931], // pointe
-					[46.847667, -1.919233], // hors cadre
-					[position.coords.latitude, position.coords.longitude]
-				];
-				var coord = p[4];
-				gps.top = ((map.height) - (((coord[0] - 46.916667) * inpixel.height.large) + (inpixel.height.bottom)));
-				gps.left = ((map.width) - (Math.abs(((coord[1] + 2.083333) * inpixel.width.large)) + (inpixel.width.right)));
-				gps.make();
-			});
-		}
-	}
-
-	if (!"geolocation" in navigator) {
-		document.querySelectorAll('#map')
-			.forEach((m) => {
-				m.classList.add('hidden');
-			});
-	}
-
 	localStorage
 		.setItem('shom', (new Date()).getDay());
 	setRootCss("--main-height", `${window.innerHeight}px`);
@@ -303,14 +313,12 @@ window.addEventListener("load", () => {
 	var level = calculateView();
 	drawLevel(level);
 	drawCar(level);
-	geolocalize();
 
 	setInterval(() => {
 		if ((new Date()).getDay() != parseInt(localStorage.getItem('shom'))) {
 			location.reload();
 		} else {
 			drawSea(level);
-			geolocalize();
 		}
 	}, 60000);
 
@@ -322,9 +330,9 @@ window.addEventListener("load", () => {
 		});
 
 	let gps = {
-		top: 0,
-		left: 0,
-		scale: 1,
+		top: -200,
+		left: -200,
+		scale: 0,
 		make: () => {
 			document.querySelector('body>div#panels>div#map.panel>svg#content>g#gps')
 				.setAttribute('transform', `translate(${gps.left},${gps.top}) scale(${gps.scale})`);
@@ -336,7 +344,7 @@ window.addEventListener("load", () => {
 		temp: 0,
 		hypo: undefined,
 		container: document.querySelector('body>div#panels>div#map.panel'),
-		img: document.querySelector('body>div#panels>div#map.panel>svg'),
+		img: document.querySelector('body>div#panels>div#map.panel>svg#content'),
 		height: 2544,
 		width: 1876,
 		resize: (scale) => {
@@ -350,16 +358,16 @@ window.addEventListener("load", () => {
 			return scale;
 		},
 	}
+
 	map.container
 		.addEventListener('scroll', (event) => {
 			localStorage.setItem('top', map.container.scrollTop);
 			localStorage.setItem('left', map.container.scrollLeft);
 		});
+
 	map.container
 		.addEventListener('wheel', (event) => {
 			if (event.ctrlKey) {
-				event.preventDefault();
-				event.stopPropagation();
 				let
 					pointx = (event.x + map.container.scrollLeft) / map.scale * 100,
 					pointy = (event.y + map.container.scrollTop - map.container.offsetTop) / map.scale * 100;
@@ -373,33 +381,40 @@ window.addEventListener("load", () => {
 				map.container.scrollLeft = (pointx * map.scale / 100) - event.x;
 				map.container.scrollTop = (pointy * map.scale / 100) - event.y + map.container.offsetTop;
 			}
+		}, {
+			passive: true
 		});
+
 	map.container
 		.addEventListener('touchmove', (event) => {
+			event.preventDefault();
 			if (event.targetTouches.length === 2) {
 				let
-					pointx = (((event.touches[0].clientX + event.touches[1].clientX) / 2) + map.container.scrollLeft) / map.scale * 100,
-					pointy = (((event.touches[0].clientY + event.touches[1].clientY) / 2) + map.container.scrollTop) / map.scale * 100;
-					
+					pointx = (((event.touches[0].clientX + event.touches[1].clientX) / 2) + map.container.scrollLeft) / map.temp * 100,
+					pointy = (((event.touches[0].clientY + event.touches[1].clientY) / 2) + map.container.scrollTop) / map.temp * 100;
+
 				let hypo1 = Math.hypot((event.targetTouches[0].pageX - event.targetTouches[1].pageX),
 					(event.targetTouches[0].pageY - event.targetTouches[1].pageY));
 
 				if (map.hypo === undefined) {
 					map.hypo = hypo1;
 				}
-				console.log(pointx, pointy);
 				map.temp = map.resize(map.scale * (hypo1 / map.hypo));
-				map.container.scrollLeft = (pointx * map.temp / 100) - event.x;
-				map.container.scrollTop = (pointy * map.temp / 100) - event.y;
+				map.container.scrollLeft = (pointx * map.temp / 100) - ((event.touches[0].clientX + event.touches[1].clientX) / 2);
+				map.container.scrollTop = (pointy * map.temp / 100) - ((event.touches[0].clientY + event.touches[1].clientY) / 2) + map.container.offsetTop;
+
 			}
-		}, false);
+		}, {
+			passive: true
+		});
+
 	map.container
 		.addEventListener('touchend', (event) => {
 			if (map.hypo != undefined) {
 				map.scale = map.temp;
 				map.hypo = undefined;
 			}
-		}, false);
+		});
 
 	var doResize;
 	window

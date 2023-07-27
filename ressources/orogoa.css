@@ -19,6 +19,16 @@ body {
 	display: none;
 }
 
+#debug {
+	top: 50px;
+	position: absolute;
+	z-index: 999;
+	width: 100%;
+	text-align: center;
+	color: black;
+	background-color: #ffffff55;
+}
+
 body>nav {
 	background-color: whitesmoke;
 	color: DarkSlateGray;
@@ -56,6 +66,14 @@ ul.presentation>li {
 
 div#map.panel {
 	overflow: auto;
+}
+
+div#map>svg#findme {
+	position: fixed;
+	bottom: 10vmin;
+	right: 2vmin;
+	background-color: #ffffff99;
+	border-radius: 50%;
 }
 
 div#shom {

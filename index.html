@@ -14,6 +14,7 @@
 </head>
 
 <body>
+	<div id="debug"></div>
 	<nav id="tabs">
 		<ul>
 			<li id="level" data-i18n="level"></li>
@@ -47,18 +48,34 @@
 			</div>
 		</div>
 		<div id="map" class="panel">
+			<svg id="findme" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="50" height="50" viewbox="0 0 50 50">
+				<g id="gps" stroke="black" stroke-width="3" fill="none">
+					<circle cx="25" cy="25" r="20" />
+					<circle cx="25" cy="25" r="15" />
+					<line x1="25" y1="35" x2="25" y2="50" />
+					<line x1="25" y1="0" x2="25" y2="15" />
+					<line x1="0" y1="25" x2="15" y2="25" />
+					<line x1="35" y1="25" x2="50" y2="25" />
+					<circle cx="25" cy="25" r="3" />
+				</g>
+			</svg>
 			<svg id="content" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1876" height="2544" viewbox="0 0  1876 2544">
 				<g>
 					<image x="0" y="0" width="1876" height="2544" xlink:href="ressources/map.jpg" />
 				</g>
 				<g id="gps" stroke="red" stroke-width="3" fill="none">
-					<circle cx="0" cy="0" r="20"  />
+					<circle cx="0" cy="0" r="20" />
 					<circle cx="0" cy="0" r="15" />
 					<line x1="0" y1="10" x2="0" y2="25" />
 					<line x1="0" y1="-10" x2="0" y2="-25" />
 					<line x1="10" y1="0" x2="25" y2="0" />
 					<line x1="-10" y1="0" x2="-25" y2="0" />
-					<circle cx="0" cy="0" r="3"
+					<circle cx="0" cy="0" r="3" />
+				</g>
+				<g id="zoom" stroke="black" stroke-width="3" stroke-dasharray="4 1" fill="none">
+					<circle cx="0" cy="0" r="20" />
+					<circle cx="0" cy="0" r="15" />
+					<circle cx="0" cy="0" r="3" />
 				</g>
 			</svg>
 		</div>
